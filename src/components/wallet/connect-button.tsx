@@ -41,18 +41,6 @@ import { defaultDescription, defaultTitle } from "~/services/metadata.service";
 import { cn } from "~/lib/utils";
 import { logoImage } from "~/services/image.service";
 import { getBaseUrl } from "~/services/url.service";
-import { colors } from "../ui/colors";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const supportFarcasterWallet = () => {
-  try {
-    const provider = Frames.wallet.ethProvider;
-    return !!provider;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
 
 const baseClassName = cn("!w-full !h-10 !text-sm");
 

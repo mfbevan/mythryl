@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 
 import "./src/env.app";
-import "./src/env.worker";
 
 // Check if we're building for Tauri (static export for desktop)
 const isTauriBuild = process.env.TAURI_BUILD === "true";

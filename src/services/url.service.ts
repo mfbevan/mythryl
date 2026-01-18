@@ -38,17 +38,17 @@ export const getBaseDomain = (): string => {
 export const createLiveUrl = (url: string) => {
   const _url = url.startsWith("/") ? url.slice(1) : url;
 
-  return `https://immutagen.ai/${_url}`;
+  return `https://mythryl.com/${_url}`;
 };
 
 export const createLiveApiUrl = (url: string) => {
   const _url = url.startsWith("/") ? url.slice(1) : url;
 
-  return `https://api.immutagen.ai/${_url}`;
+  return `https://api.mythryl.com/${_url}`;
 };
 
 export const createAssetUrl = (url: string) => {
-  const _url = new URL("https://cdn.immutagen.ai");
+  const _url = new URL("https://cdn.mythryl.com");
 
   _url.pathname = `/${url.startsWith("/") ? url.slice(1) : url}`;
   return _url.toString();

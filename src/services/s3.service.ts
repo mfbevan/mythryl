@@ -2,12 +2,12 @@ import { PutObjectCommand, S3 as S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export const BUCKETS = {
-  public: "immutagen-public",
+  public: "mythryl-public",
 } as const;
 
 type Bucket = keyof typeof BUCKETS;
 
-const defaultCDN = "https://cdn.immutagen.ai";
+const defaultCDN = "https://cdn.mythryl.com";
 
 export const CDN_URL = {
   public: defaultCDN,

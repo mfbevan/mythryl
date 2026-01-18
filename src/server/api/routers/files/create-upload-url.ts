@@ -6,10 +6,8 @@ import {
 } from "~/server/api/schema/file";
 import { getUploadUrl } from "~/services/s3.service";
 import { protectedProcedure } from "~/server/api/trpc";
-import { onlyAdminCreator } from "../../middleware";
 
 export const createUploadUrl = protectedProcedure
-  .use(onlyAdminCreator)
   .input(getFileUploadUrlRequestSchema)
   .output(getFileUploadUrlResponseSchema)
   .mutation(async ({ input }) => {

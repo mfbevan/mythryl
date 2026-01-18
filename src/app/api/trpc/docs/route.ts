@@ -13,8 +13,8 @@ export function GET() {
       url: `/api/trpc`,
       transformer: "superjson",
       meta: {
-        title: "Immutagen API",
-        description: "Immutagen API",
+        title: "Mythryl API",
+        description: "Mythryl API",
       },
     }),
     {

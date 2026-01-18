@@ -1,6 +1,6 @@
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 
-import { Farcaster } from "./farcaster";
+import { Thirdweb } from "./thirdweb";
 
 declare module "next-auth" {
   interface Session {
@@ -9,7 +9,7 @@ declare module "next-auth" {
 }
 
 export const authConfig = {
-  providers: [Farcaster],
+  providers: [Thirdweb],
   callbacks: {
     async jwt({ token, account }) {
       if (account?.providerAccountId) {

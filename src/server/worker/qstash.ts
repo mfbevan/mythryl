@@ -15,7 +15,7 @@ export const receiver = new Receiver({
 });
 
 export const createCallbackUrl = (path = "") => {
-  const url = new URL(path, "https://immutagen.ai/api/worker");
+  const url = new URL(path, "https://mythryl.com/api/worker");
   return url.toString();
 };
 

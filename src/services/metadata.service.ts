@@ -5,21 +5,21 @@ import { logoImage } from "~/services/image.service";
 import { createLiveUrl, createAssetUrl } from "~/services/url.service";
 
 export const defaultUrl = createLiveUrl("/");
-export const defaultTitle = "Immutagen";
-export const defaultDescription = "Gen AI with Social DNA";
-export const defaultSubtitle = "Gen AI with Social DNA";
+export const defaultTitle = "Mythryl";
+export const defaultDescription = "A Farcaster Client";
+export const defaultSubtitle = "A Farcaster Client";
 export const defaultImagePath = createAssetUrl("/embeds/preview.png");
 export const defaultEmbedImage = createAssetUrl("/embeds/embed_primary.png");
 export const defaultIconPath = logoImage("256");
 export const defaultSplashImage = logoImage("transparent");
-export const defaultImageAlt = "Immutagen";
-export const defaultCanonicalUrl = "immutagen.ai";
+export const defaultImageAlt = "Mythryl";
+export const defaultCanonicalUrl = "mythryl.com";
 export const defaultTags = ["nft", "ai", "generative", "art", "clanker"];
 export const defaultTwitterCreator = "@0xmfbevan";
-export const defaultPublisher = "Immutagen";
-export const defaultApplicationName = "Immutagen";
+export const defaultPublisher = "Mythryl";
+export const defaultApplicationName = "Mythryl";
 export const defaultColor = "#09090b";
-export const primaryCategory: PrimaryCategory = "art-creativity";
+export const primaryCategory: PrimaryCategory = "games";
 
 export const createMetadata = (config: {
   title?: string;

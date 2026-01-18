@@ -1,18 +1,11 @@
 {
-  "redirects": [
-    {
-      "source": "/home/:path+",
-      "destination": "/:path+",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/:path*",
       "has": [
         {
           "type": "host",
-          "value": "api.immutagen.ai"
+          "value": "api.mythryl.com"
         }
       ],
       "destination": "/api/:path*"

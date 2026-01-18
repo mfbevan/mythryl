@@ -2,8 +2,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import type { VerifyLoginPayloadParams } from "thirdweb/auth";
 
 import { login } from "./thirdweb.actions";
-
-import { getUserAccount } from "../api/routers/users/users.service";
+import {
+  getOrCreateUser,
+  getUserAvatar,
+} from "../api/routers/users/users.service";
+import { getAddress } from "thirdweb";
+import { db } from "../db";
 
 export const Thirdweb = CredentialsProvider({
   id: "thirdweb",
@@ -22,18 +26,14 @@ export const Thirdweb = CredentialsProvider({
 
     await login(verifyParams);
 
-    const walletAddress = verifyParams.payload.address;
+    const walletAddress = getAddress(verifyParams.payload.address);
 
-    const account = await getUserAccount("wallet", walletAddress, {
-      username: walletAddress.slice(0, 8),
-      displayName: walletAddress.slice(0, 8),
-      avatar: undefined,
-    });
+    const account = await getOrCreateUser(db)(walletAddress);
 
     return {
-      id: account.userId,
-      name: account.username,
-      image: account.avatar,
+      id: account.id,
+      name: account.id,
+      image: getUserAvatar(account.id),
     };
   },
 });

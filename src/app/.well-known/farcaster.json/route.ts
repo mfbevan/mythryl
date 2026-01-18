@@ -15,16 +15,8 @@ import { createLiveUrl } from "~/services/url.service";
 
 export async function GET() {
   return Response.json({
-    baseBuilder: {
-      allowedAddresses: ["0xeAbEc05d7c47EFf16c279d9091F4008324c693cC"],
-    },
-    accountAssociation: {
-      header:
-        "eyJmaWQiOjM4NTY1MSwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGJDZTFmZEQ2QzU3ZDdFRWZiNjMxMTg0NTRiNjEzZjhjMzBhQzQ0QTUifQ",
-      payload: "eyJkb21haW4iOiJpbW11dGFnZW4uYWkifQ",
-      signature:
-        "UV9+c07lZT5HmUvhxGhMzoLxBF5A/TJkB0Vqwvunb4o4WwqcDnM3gEcuJjWsVf0RCmF9++glsYKYIDB9RqGwFhw=",
-    },
+    baseBuilder: {},
+    accountAssociation: {},
     frame: {
       version: "next",
       name: defaultTitle,
@@ -34,7 +26,7 @@ export async function GET() {
       iconUrl: defaultIconPath,
       imageUrl: defaultEmbedImage,
       heroImageUrl: defaultImagePath,
-      buttonTitle: "Immutagen AI",
+      buttonTitle: "Mythryl",
       tagline: defaultSubtitle,
       splashImageUrl: getEmojiGif("✨"),
       splashBackgroundColor: defaultColor,

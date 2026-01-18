@@ -15,7 +15,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "~/components/ui/sidebar";
-import { ImmutagenIcon } from "../icons/immutagen";
 import Link from "next/link";
 import {
   homeUrl,
@@ -51,9 +50,7 @@ export const SidebarMain = ({
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href={homeUrl}>
-                <div className="size-8 overflow-hidden rounded-sm">
-                  <ImmutagenIcon className="size-8" mode="color" />
-                </div>
+                <div className="bg-primary size-8 overflow-hidden rounded-sm"></div>
                 <div className="grid flex-1 gap-0.5 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-medium">Mythryl</span>
                   <span className="truncate text-[10px]">

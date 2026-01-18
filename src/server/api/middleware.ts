@@ -4,7 +4,7 @@ import { createMiddleware } from "./trpc";
 
 import { headers } from "next/headers";
 import { getAddress, keccak256, type Address } from "thirdweb";
-import type { User, UserRole } from "../db/schema";
+import type { User } from "../db/schema";
 
 export const walletMiddleware = createMiddleware(async ({ ctx, next }) => {
   const _headers = await headers();
@@ -33,21 +33,3 @@ export const walletMiddleware = createMiddleware(async ({ ctx, next }) => {
     },
   });
 });
-
-export const roleMiddleware = (roles: UserRole | UserRole[]) =>
-  createMiddleware(async ({ ctx, next }) => {
-    const user = "user" in ctx ? (ctx.user as User) : null;
-
-    if (!user?.role || !roles.includes(user.role)) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Insufficient permissions for this action",
-      });
-    }
-
-    return next();
-  });
-
-export const onlyCreator = roleMiddleware("creator");
-export const onlyAdmin = roleMiddleware("admin");
-export const onlyAdminCreator = roleMiddleware(["admin", "creator"]);

@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  Cog,
-  LogOut,
-  Moon,
-  RefreshCcw,
-  Sun,
-  User,
-  Wallet,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, Moon, Sun, User, Wallet } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -28,7 +19,7 @@ import {
   useSidebar,
 } from "~/components/ui/sidebar";
 import { useUserDialogStore } from "../user/user.dialog";
-import { useCurrentUser, useHasRole } from "../user/user.hooks";
+import { useCurrentUser } from "../user/user.hooks";
 import { UserAvatar } from "../user/user.avatar";
 import { ConfirmSignout } from "../auth/auth.confirm-signout";
 import { useTheme } from "next-themes";
@@ -44,7 +35,6 @@ import { client } from "~/services/thirdweb.service";
 import { ConnectButton, useConnectButton } from "../wallet/connect-button";
 import { shortenAddress } from "thirdweb/utils";
 import { Button } from "../ui/button";
-import { api } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 import { toast } from "sonner";
 
@@ -56,13 +46,6 @@ export const SidebarUser = () => {
   const { openDialog } = useUserDialogStore();
   const { setTheme, theme } = useTheme();
   const { open } = useSidebar();
-  const showSettings = useHasRole(["admin", "creator"]);
-  const utils = api.useUtils();
-  const syncUser = api.users.syncUser.useMutation({
-    onSuccess: () => {
-      void utils.users.getCurrentUser.invalidate();
-    },
-  });
 
   const onToggle = (e: React.MouseEvent) => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -138,34 +121,6 @@ export const SidebarUser = () => {
               <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
               {"Toggle theme"}
             </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() =>
-                void toast
-                  .promise(() => syncUser.mutateAsync(), {
-                    loading: "Syncing Farcaster Profile...",
-                    success: "Farcaster Profile Synced!",
-                    error: "Failed to sync profile",
-                  })
-                  .unwrap()
-              }
-            >
-              <RefreshCcw
-                className={cn(
-                  "icon-inner-shadow size-4",
-                  syncUser.isPending && "animate-spin",
-                )}
-              />{" "}
-              Sync Profile
-            </DropdownMenuItem>
-
-            {showSettings && (
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <Cog className="icon-inner-shadow size-4" /> Settings
-                </Link>
-              </DropdownMenuItem>
-            )}
 
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setSignOutOpen(true)}>

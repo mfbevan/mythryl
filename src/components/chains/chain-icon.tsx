@@ -1,10 +1,9 @@
 import type { Chain } from "thirdweb";
 import { ChainProvider, ChainIcon as ChainIconComponent } from "thirdweb/react";
 
-import { Skeleton } from "../../../../warptown/src/components/ui/skeleton";
-
 import { cn } from "~/lib/utils";
 import { client } from "~/services/thirdweb.service";
+import { Skeleton } from "../ui/skeleton";
 
 export interface ChainIconProps {
   chain: Chain;
