@@ -1,0 +1,21 @@
+{
+  "redirects": [
+    {
+      "source": "/home/:path+",
+      "destination": "/:path+",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "api.immutagen.ai"
+        }
+      ],
+      "destination": "/api/:path*"
+    }
+  ]
+}

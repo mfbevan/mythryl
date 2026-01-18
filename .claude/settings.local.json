@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(xargs:*)",
+      "Bash(pnpm add:*)",
+      "Bash(find:*)",
+      "Bash(mkdir:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(node --trace-deprecation --version:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
