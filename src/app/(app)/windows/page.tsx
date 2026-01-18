@@ -49,12 +49,24 @@ export default function WindowsPage() {
               onClick={() =>
                 addWindow({
                   type: "token",
-                  chainId: 1,
-                  address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                  chainId: 8453,
+                  address: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
                 })
               }
             >
-              Open USDC (Ethereum)
+              Open DEGEN (Base)
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                addWindow({
+                  type: "token",
+                  chainId: 8453,
+                  address: "0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe",
+                })
+              }
+            >
+              Open HIGHER (Base)
             </Button>
             <Button
               variant="secondary"

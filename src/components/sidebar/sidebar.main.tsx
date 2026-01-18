@@ -23,7 +23,6 @@ import {
 } from "../navigation/navigation";
 import { usePathname } from "next/navigation";
 import { SidebarFrame } from "./sidebar.frame";
-import { ThemeToggle } from "../theme/theme.toggle";
 
 const createNavItem = (item: NavigationItem, pathname: string) => {
   return {
@@ -40,11 +39,13 @@ export const SidebarMain = ({
   const main = [
     createNavItem(navigation.home, pathname),
     createNavItem(navigation.apps, pathname),
+    createNavItem(navigation.channels, pathname),
+    createNavItem(navigation.messages, pathname),
   ];
 
   const demo = [createNavItem(navigation.windows, pathname)];
 
-  const secondary = [navigation.settings];
+  const secondary = [navigation.developers, navigation.settings];
 
   return (
     <Sidebar collapsible="icon" variant="inset" {...props}>

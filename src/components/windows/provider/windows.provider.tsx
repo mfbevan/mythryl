@@ -49,9 +49,11 @@ export const useWindowActions = () => {
     () => ({
       addWindow: store.getState().addWindow,
       removeWindow: store.getState().removeWindow,
+      removeWindowsByType: store.getState().removeWindowsByType,
       openWindow: store.getState().openWindow,
       closeWindow: store.getState().closeWindow,
       toggleWindow: store.getState().toggleWindow,
+      toggleWindowByType: store.getState().toggleWindowByType,
       closeOldestOpenWindow: store.getState().closeOldestOpenWindow,
       minimizeAllWindows: store.getState().minimizeAllWindows,
       removeAllWindows: store.getState().removeAllWindows,

@@ -1,4 +1,4 @@
-import { AppWindow, Coins, MessageSquare, User, Wallet, type LucideIcon } from "lucide-react";
+import { AppWindow, Coins, Eye, MessageSquare, User, Wallet, type LucideIcon } from "lucide-react";
 
 import type { Window } from "./windows.schema";
 import { extractHostname } from "./windows.utils";
@@ -28,9 +28,25 @@ export const windowConfigs: Record<Window["type"], WindowConfig> = {
       return "App";
     },
   },
+  preview: {
+    label: "Preview",
+    icon: Eye,
+    getLabel: (window) => {
+      if (window.type === "preview") {
+        return `Preview: ${extractHostname(window.url)}`;
+      }
+      return "Preview";
+    },
+  },
   token: {
     label: "Token",
     icon: Coins,
+    getLabel: (window) => {
+      if (window.type === "token") {
+        return `${window.address.slice(0, 6)}...${window.address.slice(-4)}`;
+      }
+      return "Token";
+    },
   },
   conversation: {
     label: "Chat",

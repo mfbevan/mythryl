@@ -12,6 +12,12 @@ export const miniappWindowSchema = z.object({
 });
 export type MiniappWindow = z.infer<typeof miniappWindowSchema>;
 
+export const previewWindowSchema = z.object({
+  type: z.literal("preview"),
+  url: z.string(),
+});
+export type PreviewWindow = z.infer<typeof previewWindowSchema>;
+
 export const messageWindowSchema = z.object({
   type: z.literal("message"),
 });
@@ -34,6 +40,7 @@ export type ConversationWindow = z.infer<typeof conversationWindowSchema>;
 export const windowSchema = z.discriminatedUnion("type", [
   walletWindowSchema,
   miniappWindowSchema,
+  previewWindowSchema,
   messageWindowSchema,
   tokenWindowSchema,
   conversationWindowSchema,

@@ -1,7 +1,7 @@
 import { createStore } from "zustand/vanilla";
 
 import type { Window, WindowInstance } from "../windows.schema";
-import { getWindowKey } from "../windows.utils";
+import { getWindowKey, normalizeUrl } from "../windows.utils";
 
 export interface WindowsStore {
   windows: Map<string, WindowInstance>;
@@ -10,9 +10,11 @@ export interface WindowsStore {
   setIsMobile: (isMobile: boolean) => void;
   addWindow: (window: Window) => void;
   removeWindow: (key: string) => void;
+  removeWindowsByType: (type: Window["type"]) => void;
   openWindow: (key: string) => void;
   closeWindow: (key: string) => void;
   toggleWindow: (key: string) => void;
+  toggleWindowByType: (window: Window) => void;
   closeOldestOpenWindow: () => void;
   minimizeAllWindows: () => void;
   removeAllWindows: () => void;
@@ -27,8 +29,27 @@ export const createWindowsStore = () => {
     setIsMobile: (isMobile) => set({ isMobile }),
 
     addWindow: (window) => {
-      const key = getWindowKey(window);
+      // Normalize URLs for miniapp and preview windows
+      const normalizedWindow: Window =
+        window.type === "miniapp" || window.type === "preview"
+          ? { ...window, url: normalizeUrl(window.url) }
+          : window;
+
+      const key = getWindowKey(normalizedWindow);
       const { windows, isMobile } = get();
+
+      // For preview windows, replace the URL if one already exists
+      if (normalizedWindow.type === "preview" && windows.has(key)) {
+        const newWindows = new Map(windows);
+        const existing = newWindows.get(key)!;
+        newWindows.set(key, {
+          ...existing,
+          window: normalizedWindow,
+          isOpen: true,
+        });
+        set({ windows: newWindows });
+        return;
+      }
 
       if (windows.has(key)) {
         get().openWindow(key);
@@ -46,7 +67,7 @@ export const createWindowsStore = () => {
       const maxOrder = Math.max(0, ...Array.from(newWindows.values()).map((w) => w.order));
       newWindows.set(key, {
         key,
-        window,
+        window: normalizedWindow,
         isOpen: true,
         order: maxOrder + 1,
       });
@@ -58,6 +79,17 @@ export const createWindowsStore = () => {
       const { windows } = get();
       const newWindows = new Map(windows);
       newWindows.delete(key);
+      set({ windows: newWindows });
+    },
+
+    removeWindowsByType: (type) => {
+      const { windows } = get();
+      const newWindows = new Map(windows);
+      for (const [key, instance] of newWindows) {
+        if (instance.window.type === type) {
+          newWindows.delete(key);
+        }
+      }
       set({ windows: newWindows });
     },
 
@@ -94,6 +126,20 @@ export const createWindowsStore = () => {
       if (!instance) return;
 
       if (instance.isOpen) {
+        get().closeWindow(key);
+      } else {
+        get().openWindow(key);
+      }
+    },
+
+    toggleWindowByType: (window) => {
+      const key = getWindowKey(window);
+      const { windows } = get();
+      const instance = windows.get(key);
+
+      if (!instance) {
+        get().addWindow(window);
+      } else if (instance.isOpen) {
         get().closeWindow(key);
       } else {
         get().openWindow(key);

@@ -12,7 +12,9 @@
       "WebSearch",
       "WebFetch(domain:v2.tauri.app)",
       "Bash(pnpm tauri:*)",
-      "Bash(pnpm tauri:build:*)"
+      "Bash(pnpm tauri:build:*)",
+      "WebFetch(domain:docs.farcaster.xyz)",
+      "WebFetch(domain:miniapps.farcaster.xyz)"
     ],
     "deny": [],
     "ask": []

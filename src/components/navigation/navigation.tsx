@@ -1,4 +1,6 @@
 import {
+  Antenna,
+  Code,
   Cog,
   Handshake,
   HatGlasses,
@@ -6,6 +8,7 @@ import {
   Layout,
   LayoutGrid,
   LifeBuoy,
+  MessageSquare,
   type LucideIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -34,6 +37,20 @@ export const navigation = {
     isAvailable: true,
   },
 
+  channels: {
+    label: "Channels",
+    href: "/channels",
+    icon: Antenna,
+    isAvailable: true,
+  },
+
+  messages: {
+    label: "Messages",
+    href: "/messages",
+    icon: MessageSquare,
+    isAvailable: true,
+  },
+
   windows: {
     label: "Windows",
     href: "/windows",
@@ -45,6 +62,15 @@ export const navigation = {
     label: "Settings",
     href: "/settings",
     icon: Cog,
+    isAvailable: true,
+  },
+
+  // Developers
+
+  developers: {
+    label: "Developers",
+    href: "/developers",
+    icon: Code,
     isAvailable: true,
   },
 

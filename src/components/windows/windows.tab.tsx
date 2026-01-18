@@ -9,11 +9,12 @@ import { cn } from "~/lib/utils";
 
 import { useWindowActions } from "./provider";
 import { WindowContent } from "./windows.content";
-import { getWindowIcon, getWindowLabel } from "./windows.config";
+import { WindowIcon } from "./windows.icon";
+import { WindowLabel } from "./windows.label";
 import type { WindowInstance } from "./windows.schema";
 
-const WINDOW_WIDTH = 320;
-const WINDOW_HEIGHT = 480;
+const WINDOW_WIDTH = 375;
+const WINDOW_HEIGHT = 695;
 const HEADER_HEIGHT = 40;
 const MINIMIZED_WIDTH = 120;
 
@@ -45,8 +46,13 @@ export function WindowTab({ instance }: WindowTabProps) {
     transition,
   };
 
-  const Icon = getWindowIcon(instance.window);
-  const label = getWindowLabel(instance.window);
+  const handleToggle = () => {
+    // Blur any focused iframe before toggling
+    if (document.activeElement?.tagName === "IFRAME") {
+      (document.activeElement as HTMLElement).blur();
+    }
+    toggleWindow(instance.key);
+  };
 
   return (
     <motion.div
@@ -67,12 +73,14 @@ export function WindowTab({ instance }: WindowTabProps) {
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        onClick={() => toggleWindow(instance.key)}
+        onClick={handleToggle}
         className="flex items-center gap-2 px-3 py-2 bg-muted/50 cursor-pointer hover:bg-muted/70 transition-colors select-none touch-none whitespace-nowrap"
         style={{ height: HEADER_HEIGHT }}
       >
-        <Icon className="size-4 shrink-0" />
-        <span className="text-sm font-medium truncate flex-1 min-w-0">{label}</span>
+        <WindowIcon window={instance.window} className="size-4" />
+        <span className="text-sm font-medium truncate flex-1 min-w-0">
+          <WindowLabel window={instance.window} />
+        </span>
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -84,12 +92,14 @@ export function WindowTab({ instance }: WindowTabProps) {
         </button>
       </div>
 
-      <div
-        className="overflow-auto border-t"
-        style={{ width: WINDOW_WIDTH, height: WINDOW_HEIGHT - HEADER_HEIGHT }}
-      >
-        <WindowContent window={instance.window} />
-      </div>
+      {instance.isOpen && (
+        <div
+          className="overflow-hidden border-t"
+          style={{ width: WINDOW_WIDTH, height: WINDOW_HEIGHT - HEADER_HEIGHT }}
+        >
+          <WindowContent window={instance.window} />
+        </div>
+      )}
     </motion.div>
   );
 }

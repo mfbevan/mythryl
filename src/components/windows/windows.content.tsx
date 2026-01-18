@@ -18,6 +18,7 @@ export function WindowContent({ window }: WindowContentProps) {
     case "message":
       return <MessageWindowContent />;
     case "miniapp":
+    case "preview":
       return <MiniappWindowContent url={window.url} />;
     case "token":
       return <TokenWindowContent chainId={window.chainId} address={window.address} />;
