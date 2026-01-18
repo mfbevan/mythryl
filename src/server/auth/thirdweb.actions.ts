@@ -49,14 +49,18 @@ export const isLoggedIn = async (expectedAddress: string) => {
   const cookieStore = await cookies();
 
   const jwt = cookieStore.get("jwt");
+
   if (!jwt?.value) {
     return false;
   }
 
   const authResult = await thirdwebAuth.verifyJWT({ jwt: jwt.value });
 
+  console.log(authResult);
+
   return (
-    authResult.valid && getAddress(authResult.parsedJWT.sub) === expectedAddress
+    authResult.valid &&
+    getAddress(authResult.parsedJWT.sub) === getAddress(expectedAddress)
   );
 };
 

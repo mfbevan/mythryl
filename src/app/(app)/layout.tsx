@@ -9,6 +9,8 @@ import { SessionProvider } from "next-auth/react";
 import { api, HydrateClient } from "~/trpc/server";
 import { ThirdwebProvider } from "thirdweb/react";
 import { FarcasterProvider } from "~/components/farcaster/farcaster.provider";
+import { WindowsProvider } from "~/components/windows/provider";
+import { WindowManager } from "~/components/windows/windows.manager";
 import { env } from "~/env.app";
 
 export default async function AppLayout({
@@ -25,12 +27,15 @@ export default async function AppLayout({
       <SessionProvider session={session}>
         <HydrateClient>
           <FarcasterProvider>
-            <SidebarProvider>
-              {env.NEXT_PUBLIC_APP_ENABLED && <SidebarMain />}
-              <SidebarBreakpoints>
-                <SidebarInset>{children}</SidebarInset>
-              </SidebarBreakpoints>
-            </SidebarProvider>
+            <WindowsProvider>
+              <SidebarProvider>
+                {env.NEXT_PUBLIC_APP_ENABLED && <SidebarMain />}
+                <SidebarBreakpoints>
+                  <SidebarInset>{children}</SidebarInset>
+                </SidebarBreakpoints>
+              </SidebarProvider>
+              <WindowManager />
+            </WindowsProvider>
           </FarcasterProvider>
         </HydrateClient>
       </SessionProvider>

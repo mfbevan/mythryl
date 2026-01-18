@@ -18,7 +18,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { useUserDialogStore } from "../user/user.dialog";
 import { useCurrentUser } from "../user/user.hooks";
 import { UserAvatar } from "../user/user.avatar";
 import { ConfirmSignout } from "../auth/auth.confirm-signout";
@@ -36,14 +35,12 @@ import { ConnectButton, useConnectButton } from "../wallet/connect-button";
 import { shortenAddress } from "thirdweb/utils";
 import { Button } from "../ui/button";
 import { cn } from "~/lib/utils";
-import { toast } from "sonner";
 
 export const SidebarUser = () => {
   const pathname = usePathname();
   const [user] = useCurrentUser();
   const account = useActiveAccount();
   const [signOutOpen, setSignOutOpen] = useState(false);
-  const { openDialog } = useUserDialogStore();
   const { setTheme, theme } = useTheme();
   const { open } = useSidebar();
 
@@ -107,7 +104,7 @@ export const SidebarUser = () => {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem onClick={() => openDialog(user.id)}>
+            <DropdownMenuItem>
               <User className="icon-inner-shadow size-4" /> Profile
             </DropdownMenuItem>
 

@@ -3,6 +3,7 @@ import {
   Handshake,
   HatGlasses,
   Home,
+  Layout,
   LayoutGrid,
   LifeBuoy,
   type LucideIcon,
@@ -26,17 +27,24 @@ export const navigation = {
     isAvailable: true,
   },
 
-  settings: {
-    label: "Settings",
-    href: "/settings",
-    icon: Cog,
-    isAvailable: true,
-  },
-
   apps: {
     label: "Apps",
     href: "/apps",
     icon: LayoutGrid,
+    isAvailable: true,
+  },
+
+  windows: {
+    label: "Windows",
+    href: "/windows",
+    icon: Layout,
+    isAvailable: true,
+  },
+
+  settings: {
+    label: "Settings",
+    href: "/settings",
+    icon: Cog,
     isAvailable: true,
   },
 

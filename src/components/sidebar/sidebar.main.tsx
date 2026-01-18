@@ -23,6 +23,7 @@ import {
 } from "../navigation/navigation";
 import { usePathname } from "next/navigation";
 import { SidebarFrame } from "./sidebar.frame";
+import { ThemeToggle } from "../theme/theme.toggle";
 
 const createNavItem = (item: NavigationItem, pathname: string) => {
   return {
@@ -40,6 +41,8 @@ export const SidebarMain = ({
     createNavItem(navigation.home, pathname),
     createNavItem(navigation.apps, pathname),
   ];
+
+  const demo = [createNavItem(navigation.windows, pathname)];
 
   const secondary = [navigation.settings];
 
@@ -66,6 +69,7 @@ export const SidebarMain = ({
       <SidebarRail />
       <SidebarContent>
         <SidebarPrimary items={main} />
+        <SidebarPrimary items={demo} title="Demo" />
         <SidebarSecondary items={secondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

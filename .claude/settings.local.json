@@ -8,7 +8,10 @@
       "Bash(mkdir:*)",
       "Bash(pnpm typecheck:*)",
       "Bash(pnpm lint:*)",
-      "Bash(node --trace-deprecation --version:*)"
+      "Bash(node --trace-deprecation --version:*)",
+      "WebSearch",
+      "WebFetch(domain:v2.tauri.app)",
+      "Bash(pnpm tauri:*)"
     ],
     "deny": [],
     "ask": []

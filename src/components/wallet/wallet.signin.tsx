@@ -14,7 +14,11 @@ import { farcasterWallet } from "../farcaster/farcaster.wallet";
 import { activeChain, client } from "~/services/thirdweb.service";
 import { cn } from "~/lib/utils";
 import { logoImage } from "~/services/image.service";
-import { getLoginPayload, logout } from "~/server/auth/thirdweb.actions";
+import {
+  getLoginPayload,
+  isLoggedIn,
+  logout,
+} from "~/server/auth/thirdweb.actions";
 import { defaultTitle, defaultDescription } from "~/services/metadata.service";
 import { getBaseUrl } from "~/services/url.service";
 
@@ -29,9 +33,7 @@ const supportFarcasterWallet = () => {
   }
 };
 
-const baseClassName = cn(
-  "!h-9 !min-w-36 !p-1 !bg-background !border !border-border !text-sm !shadow-xs !hover:bg-accent",
-);
+const baseClassName = cn();
 
 export const WalletSignIn = ({ className }: { className?: string }) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -82,8 +84,17 @@ export const WalletSignIn = ({ className }: { className?: string }) => {
           url: getBaseUrl(),
           logoUrl: logoImage(),
         }}
+        detailsModal={{
+          hideDisconnect: true,
+          hideSwitchWallet: true,
+          hideBuyFunds: true,
+          hideSendFunds: true,
+          hideReceiveFunds: true,
+          assetTabs: [],
+          manageWallet: {},
+        }}
         auth={{
-          isLoggedIn: () => Promise.resolve(false),
+          isLoggedIn,
           doLogin,
           doLogout: logout,
           getLoginPayload,
