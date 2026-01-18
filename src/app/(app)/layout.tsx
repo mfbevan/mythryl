@@ -9,6 +9,7 @@ import {
 import { SessionProvider } from "next-auth/react";
 import { ThirdwebProvider } from "thirdweb/react";
 import { FarcasterProvider } from "~/components/farcaster/farcaster.provider";
+import { MessagesProvider } from "~/components/messages";
 import { WindowsProvider } from "~/components/windows/provider";
 import { WindowManager } from "~/components/windows/windows.manager";
 import { env } from "~/env.app";
@@ -20,15 +21,17 @@ export default function AppLayout({
     <ThirdwebProvider>
       <SessionProvider>
         <FarcasterProvider>
-          <WindowsProvider>
-            <SidebarProvider>
-              {env.NEXT_PUBLIC_APP_ENABLED && <SidebarMain />}
-              <SidebarBreakpoints>
-                <SidebarInset>{children}</SidebarInset>
-              </SidebarBreakpoints>
-            </SidebarProvider>
-            <WindowManager />
-          </WindowsProvider>
+          <MessagesProvider>
+            <WindowsProvider>
+              <SidebarProvider>
+                {env.NEXT_PUBLIC_APP_ENABLED && <SidebarMain />}
+                <SidebarBreakpoints>
+                  <SidebarInset>{children}</SidebarInset>
+                </SidebarBreakpoints>
+              </SidebarProvider>
+              <WindowManager />
+            </WindowsProvider>
+          </MessagesProvider>
         </FarcasterProvider>
       </SessionProvider>
     </ThirdwebProvider>

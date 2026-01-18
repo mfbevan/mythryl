@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ConnectButton as ThirdwebConnectButton } from "thirdweb/react";
-import { createWallet } from "thirdweb/wallets";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { Suspense } from "react";
 import Frames from "@farcaster/miniapp-sdk";
 import { signIn } from "next-auth/react";
@@ -41,7 +41,10 @@ export const WalletSignIn = ({ className }: { className?: string }) => {
   const getLoginPayloadMutation = api.thirdweb.getLoginPayload.useMutation();
   const logoutMutation = api.thirdweb.logout.useMutation();
 
-  const getLoginPayload = async (args: { address: string; chainId?: number }) => {
+  const getLoginPayload = async (args: {
+    address: string;
+    chainId?: number;
+  }) => {
     return getLoginPayloadMutation.mutateAsync(args);
   };
 
@@ -67,12 +70,11 @@ export const WalletSignIn = ({ className }: { className?: string }) => {
       <ThirdwebConnectButton
         client={client}
         wallets={[
-          createWallet("io.metamask"),
-          createWallet("com.coinbase.wallet"),
-          createWallet("me.rainbow"),
-          createWallet("io.rabby"),
-          createWallet("org.uniswap"),
-          farcasterWallet,
+          inAppWallet({
+            auth: {
+              options: ["farcaster"],
+            },
+          }),
         ]}
         chain={activeChain}
         autoConnect

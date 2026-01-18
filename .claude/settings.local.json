@@ -14,7 +14,15 @@
       "Bash(pnpm tauri:*)",
       "Bash(pnpm tauri:build:*)",
       "WebFetch(domain:docs.farcaster.xyz)",
-      "WebFetch(domain:miniapps.farcaster.xyz)"
+      "WebFetch(domain:miniapps.farcaster.xyz)",
+      "Bash(cat:*)",
+      "WebFetch(domain:docs.xmtp.org)",
+      "Bash(grep:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:xmtp.org)",
+      "WebFetch(domain:docs.neynar.com)",
+      "Bash(pnpm check:*)",
+      "WebFetch(domain:portal.thirdweb.com)"
     ],
     "deny": [],
     "ask": []
