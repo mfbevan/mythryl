@@ -6,7 +6,6 @@ import { createWallet } from "thirdweb/wallets";
 import { Suspense } from "react";
 import Frames from "@farcaster/miniapp-sdk";
 import { signIn } from "next-auth/react";
-import { useMutation } from "@tanstack/react-query";
 import type { VerifyLoginPayloadParams } from "thirdweb/auth";
 
 import { farcasterWallet } from "../farcaster/farcaster.wallet";
@@ -14,13 +13,9 @@ import { farcasterWallet } from "../farcaster/farcaster.wallet";
 import { activeChain, client } from "~/services/thirdweb.service";
 import { cn } from "~/lib/utils";
 import { logoImage } from "~/services/image.service";
-import {
-  getLoginPayload,
-  isLoggedIn,
-  logout,
-} from "~/server/auth/thirdweb.actions";
 import { defaultTitle, defaultDescription } from "~/services/metadata.service";
 import { getBaseUrl } from "~/services/url.service";
+import { api } from "~/trpc/react";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const supportFarcasterWallet = () => {
@@ -42,11 +37,26 @@ export const WalletSignIn = ({ className }: { className?: string }) => {
     setIsMounted(true);
   }, []);
 
-  const { mutateAsync: doLogin } = useMutation({
-    mutationFn: async (payload: VerifyLoginPayloadParams) => {
-      await signIn("thirdweb", { payload: JSON.stringify(payload) });
-    },
-  });
+  const utils = api.useUtils();
+  const getLoginPayloadMutation = api.thirdweb.getLoginPayload.useMutation();
+  const logoutMutation = api.thirdweb.logout.useMutation();
+
+  const getLoginPayload = async (args: { address: string; chainId?: number }) => {
+    return getLoginPayloadMutation.mutateAsync(args);
+  };
+
+  const isLoggedIn = async (address: string) => {
+    const result = await utils.thirdweb.isLoggedIn.fetch({ address });
+    return result;
+  };
+
+  const doLogin = async (payload: VerifyLoginPayloadParams) => {
+    await signIn("thirdweb", { payload: JSON.stringify(payload) });
+  };
+
+  const doLogout = async () => {
+    await logoutMutation.mutateAsync();
+  };
 
   if (!isMounted) {
     return null;
@@ -96,7 +106,7 @@ export const WalletSignIn = ({ className }: { className?: string }) => {
         auth={{
           isLoggedIn,
           doLogin,
-          doLogout: logout,
+          doLogout,
           getLoginPayload,
         }}
       />

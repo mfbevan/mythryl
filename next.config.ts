@@ -8,7 +8,9 @@ const isTauriBuild = process.env.TAURI_BUILD === "true";
 
 const config: NextConfig = {
   /* config options here */
-  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
+  pageExtensions: isTauriBuild
+    ? ["jsx", "tsx"] // Exclude .ts files (API routes) for static export
+    : ["js", "jsx", "mdx", "ts", "tsx"],
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.externals.push("pino-pretty", "encoding");

@@ -1,20 +1,18 @@
-"use server";
+// Shared thirdweb auth service - used by both tRPC router and NextAuth provider
 
-import type {
-  GenerateLoginPayloadParams,
-  VerifyLoginPayloadParams,
-} from "thirdweb/auth";
 import { createAuth } from "thirdweb/auth";
 import { privateKeyToAccount } from "thirdweb/wallets";
-import { cookies } from "next/headers";
 import { getAddress } from "thirdweb";
+import { cookies } from "next/headers";
+import type { VerifyLoginPayloadParams, GenerateLoginPayloadParams } from "thirdweb/auth";
+
 import { client } from "~/services/thirdweb.service";
 import { getBaseUrl } from "~/services/url.service";
 import { env } from "~/env.app";
 
 const privateKey = env.THIRDWEB_AUTH_PRIVATE_KEY;
 
-const thirdwebAuth = createAuth({
+export const thirdwebAuth = createAuth({
   domain: getBaseUrl(),
   adminAccount: privateKeyToAccount({ client, privateKey }),
   client,
@@ -38,16 +36,13 @@ export const login = async (payload: VerifyLoginPayloadParams) => {
     payload: verifiedPayload.payload,
   });
   const cookieStore = await cookies();
-  cookieStore.set("jwt", jwt, {
-    // sameSite: "none",
-    // httpOnly: true,
-    // secure: true,
-  });
+  cookieStore.set("jwt", jwt, {});
+
+  return { success: true };
 };
 
 export const isLoggedIn = async (expectedAddress: string) => {
   const cookieStore = await cookies();
-
   const jwt = cookieStore.get("jwt");
 
   if (!jwt?.value) {
@@ -56,8 +51,6 @@ export const isLoggedIn = async (expectedAddress: string) => {
 
   const authResult = await thirdwebAuth.verifyJWT({ jwt: jwt.value });
 
-  console.log(authResult);
-
   return (
     authResult.valid &&
     getAddress(authResult.parsedJWT.sub) === getAddress(expectedAddress)
@@ -65,10 +58,6 @@ export const isLoggedIn = async (expectedAddress: string) => {
 };
 
 export const logout = async () => {
-  await clearJwt();
-};
-
-const clearJwt = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("jwt");
   cookieStore.delete("fc-jwt");
@@ -82,4 +71,5 @@ const clearJwt = async () => {
     httpOnly: true,
     secure: true,
   });
+  return { success: true };
 };

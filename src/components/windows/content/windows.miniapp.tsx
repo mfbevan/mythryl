@@ -5,9 +5,14 @@ interface MiniappWindowContentProps {
 }
 
 export function MiniappWindowContent({ url }: MiniappWindowContentProps) {
+  const fullUrl = url.startsWith("http") ? url : `https://${url}`;
+
   return (
-    <div className="p-4">
-      <p className="text-sm text-muted-foreground">Miniapp: {url}</p>
-    </div>
+    <iframe
+      src={fullUrl}
+      className="w-full h-full border-0"
+      allow="clipboard-write; web-share"
+      sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+    />
   );
 }

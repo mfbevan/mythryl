@@ -11,7 +11,8 @@
       "Bash(node --trace-deprecation --version:*)",
       "WebSearch",
       "WebFetch(domain:v2.tauri.app)",
-      "Bash(pnpm tauri:*)"
+      "Bash(pnpm tauri:*)",
+      "Bash(pnpm tauri:build:*)"
     ],
     "deny": [],
     "ask": []

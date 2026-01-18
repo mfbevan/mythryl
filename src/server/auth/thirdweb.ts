@@ -1,7 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { VerifyLoginPayloadParams } from "thirdweb/auth";
 
-import { login } from "./thirdweb.actions";
+import { login } from "./thirdweb.service";
 import {
   getOrCreateUser,
   getUserAvatar,

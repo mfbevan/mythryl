@@ -28,15 +28,15 @@ export default function WindowsPage() {
           <div className="flex flex-wrap gap-2">
             <Button
               variant="secondary"
-              onClick={() => addWindow({ type: "miniapp", url: "https://example.com" })}
+              onClick={() => addWindow({ type: "miniapp", url: "https://warptown.com" })}
             >
-              Open example.com
+              Open Warptown
             </Button>
             <Button
               variant="secondary"
-              onClick={() => addWindow({ type: "miniapp", url: "https://github.com" })}
+              onClick={() => addWindow({ type: "miniapp", url: "https://example.com" })}
             >
-              Open github.com
+              Open example.com
             </Button>
           </div>
         </div>

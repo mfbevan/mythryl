@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     );
 
     return new NextResponse(blob, { headers });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to download file" },
       { status: 500 },

@@ -219,6 +219,9 @@ importers:
       react-dom:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
+      react-error-boundary:
+        specifier: ^6.1.0
+        version: 6.1.0(react@19.2.0)
       react-farcaster-embed:
         specifier: ^1.11.0
         version: 1.11.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -7017,6 +7020,11 @@ packages:
     resolution: {integrity: sha512-UlbRu4cAiGaIewkPyiRGJk0imDN2T3JjieT6spoL2UeSf5od4n5LB/mQ4ejmxhCFT1tYe8IvaFulzynWovsEFQ==}
     peerDependencies:
       react: ^19.2.0
+
+  react-error-boundary@6.1.0:
+    resolution: {integrity: sha512-02k9WQ/mUhdbXir0tC1NiMesGzRPaCsJEWU/4bcFrbY1YMZOtHShtZP6zw0SJrBWA/31H0KT9/FgdL8+sPKgHA==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
 
   react-farcaster-embed@1.11.0:
     resolution: {integrity: sha512-iSJGB+LiAApLvzmSa4Gpawad4VnkdeDFNjWr4mucWvmJB/LM0DmEEiwQJV4If32HDJrCLHwaUK0jGohtNDFslA==}
@@ -17248,6 +17256,10 @@ snapshots:
     dependencies:
       react: 19.2.0
       scheduler: 0.27.0
+
+  react-error-boundary@6.1.0(react@19.2.0):
+    dependencies:
+      react: 19.2.0
 
   react-farcaster-embed@1.11.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
