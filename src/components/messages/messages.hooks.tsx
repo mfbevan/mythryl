@@ -1,23 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ContentTypeReaction,
-  type Reaction,
-} from "@xmtp/content-type-reaction";
-import { toast } from "sonner";
 
-import { useMessages, useMessagesClient } from "./messages.provider";
+import {
+  ConversationType,
+  IdentifierKind,
+  ReactionAction,
+  ReactionSchema,
+  type Identifier,
+  type Group,
+  type Reaction,
+} from "@xmtp/browser-sdk";
+
+import { useMessagesClient } from "./messages.provider";
 import { useMessagesStore } from "./messages.store";
-import type { XmtpConversation, XmtpMessage } from "./messages.types";
+import type { XmtpMessage } from "./messages.types";
 
 const QUERY_KEYS = {
   conversations: ["xmtp", "conversations"] as const,
   messages: (conversationId: string) =>
     ["xmtp", "messages", conversationId] as const,
-  canMessage: (addresses: string[]) =>
-    ["xmtp", "canMessage", addresses] as const,
+  canMessage: (identifiers: Identifier[]) =>
+    ["xmtp", "canMessage", identifiers] as const,
 };
 
 export const useConversations = () => {
@@ -34,9 +39,34 @@ export const useConversations = () => {
       const conversationsWithMessages = await Promise.all(
         conversations.map(async (conversation) => {
           const messages = await conversation.messages({ limit: 1n });
+          const isDm = conversation.metadata?.conversationType === ConversationType.Dm;
+          const isGroup = conversation.metadata?.conversationType === ConversationType.Group;
+
+          // Get peer address for DMs
+          let peerAddress: string | undefined;
+          if (isDm) {
+            try {
+              const members = await conversation.members();
+              const peer = members.find(
+                (m) => m.inboxId !== client.inboxId
+              );
+              // GroupMember has accountIdentifiers, not addresses
+              const peerIdentifier = peer?.accountIdentifiers?.[0];
+              peerAddress = peerIdentifier?.identifier;
+            } catch {
+              // Ignore errors getting peer address
+            }
+          }
+
+          // Get name for groups
+          const name = isGroup ? (conversation as Group).name : undefined;
+
           return {
             conversation,
             lastMessage: messages[0],
+            peerAddress,
+            name,
+            isGroup,
           };
         }),
       );
@@ -76,7 +106,7 @@ export const useConversationMessages = (conversationId: string | null) => {
 };
 
 export const useSendMessage = () => {
-  const { client, isReady } = useMessagesClient();
+  const { client } = useMessagesClient();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -93,7 +123,7 @@ export const useSendMessage = () => {
         await client.conversations.getConversationById(conversationId);
       if (!conversation) throw new Error("Conversation not found");
 
-      await conversation.send(content);
+      await conversation.sendText(content);
     },
     onSuccess: (_, { conversationId }) => {
       void queryClient.invalidateQueries({
@@ -103,16 +133,11 @@ export const useSendMessage = () => {
         queryKey: QUERY_KEYS.conversations,
       });
     },
-    onError: (error) => {
-      toast.error("Failed to send message", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
-    },
   });
 };
 
 export const useCreateDm = () => {
-  const { client, isReady } = useMessagesClient();
+  const { client } = useMessagesClient();
   const queryClient = useQueryClient();
   const { setActiveConversation } = useMessagesStore();
 
@@ -120,7 +145,12 @@ export const useCreateDm = () => {
     mutationFn: async (peerAddress: string) => {
       if (!client) throw new Error("XMTP client not ready");
 
-      const conversation = await client.conversations.newDm(peerAddress);
+      const identifier: Identifier = {
+        identifier: peerAddress.toLowerCase(),
+        identifierKind: IdentifierKind.Ethereum,
+      };
+      const conversation =
+        await client.conversations.createDmWithIdentifier(identifier);
       return conversation;
     },
     onSuccess: (conversation) => {
@@ -129,32 +159,32 @@ export const useCreateDm = () => {
       });
       setActiveConversation(conversation.id);
     },
-    onError: (error) => {
-      toast.error("Failed to create conversation", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
-    },
   });
 };
 
 export const useCreateGroup = () => {
-  const { client, isReady } = useMessagesClient();
+  const { client } = useMessagesClient();
   const queryClient = useQueryClient();
   const { setActiveConversation } = useMessagesStore();
 
   return useMutation({
     mutationFn: async ({
       memberAddresses,
-      name,
+      groupName,
     }: {
       memberAddresses: string[];
-      name?: string;
+      groupName?: string;
     }) => {
       if (!client) throw new Error("XMTP client not ready");
 
-      const group = await client.conversations.newGroup(memberAddresses, {
-        name,
-      });
+      const identifiers: Identifier[] = memberAddresses.map((address) => ({
+        identifier: address.toLowerCase(),
+        identifierKind: IdentifierKind.Ethereum,
+      }));
+      const group = await client.conversations.createGroupWithIdentifiers(
+        identifiers,
+        groupName ? { groupName } : undefined,
+      );
       return group;
     },
     onSuccess: (group) => {
@@ -162,29 +192,25 @@ export const useCreateGroup = () => {
         queryKey: QUERY_KEYS.conversations,
       });
       setActiveConversation(group.id);
-      toast.success("Group created");
-    },
-    onError: (error) => {
-      toast.error("Failed to create group", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
     },
   });
 };
 
 export const useReaction = () => {
-  const { client, isReady } = useMessagesClient();
+  const { client } = useMessagesClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       conversationId,
       messageId,
+      referenceInboxId,
       emoji,
       action,
     }: {
       conversationId: string;
       messageId: string;
+      referenceInboxId: string;
       emoji: string;
       action: "added" | "removed";
     }) => {
@@ -194,40 +220,36 @@ export const useReaction = () => {
         await client.conversations.getConversationById(conversationId);
       if (!conversation) throw new Error("Conversation not found");
 
+      // Use sendReaction method with proper enum types
       const reaction: Reaction = {
         reference: messageId,
-        action,
+        referenceInboxId,
+        action: action === "added" ? ReactionAction.Added : ReactionAction.Removed,
         content: emoji,
-        schema: "unicode",
+        schema: ReactionSchema.Unicode,
       };
-
-      await conversation.send(reaction, ContentTypeReaction);
+      await conversation.sendReaction(reaction);
     },
     onSuccess: (_, { conversationId }) => {
       void queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.messages(conversationId),
       });
     },
-    onError: (error) => {
-      toast.error("Failed to add reaction", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
-    },
   });
 };
 
-export const useCanMessage = (addresses: string[]) => {
+export const useCanMessage = (identifiers: Identifier[]) => {
   const { client, isReady } = useMessagesClient();
 
   return useQuery({
-    queryKey: QUERY_KEYS.canMessage(addresses),
+    queryKey: QUERY_KEYS.canMessage(identifiers),
     queryFn: async () => {
       if (!client) throw new Error("XMTP client not ready");
 
-      const results = await client.canMessage(addresses);
+      const results = await client.canMessage(identifiers);
       return results;
     },
-    enabled: isReady && addresses.length > 0,
+    enabled: isReady && identifiers.length > 0,
     staleTime: 60_000,
   });
 };
@@ -260,17 +282,9 @@ export const useMessageStream = () => {
             queryKey: QUERY_KEYS.conversations,
           });
 
-          // Show notification for messages not in active conversation
+          // Track unread for messages not in active conversation
           if (conversationId !== activeConversationId) {
             incrementUnreadCount(conversationId);
-
-            // Show toast notification
-            toast.info("New message", {
-              description:
-                typeof message.content === "string"
-                  ? message.content.slice(0, 50)
-                  : "New message received",
-            });
           }
         }
       } catch (error) {
@@ -298,19 +312,55 @@ export const useActiveConversation = () => {
   const { activeConversationId, setActiveConversation } = useMessagesStore();
   const { client, isReady } = useMessagesClient();
 
-  const conversation = useQuery({
+  const conversationQuery = useQuery({
     queryKey: ["xmtp", "conversation", activeConversationId],
     queryFn: async () => {
       if (!client || !activeConversationId) return null;
-      return client.conversations.getConversationById(activeConversationId);
+
+      const conversation =
+        await client.conversations.getConversationById(activeConversationId);
+      if (!conversation) return null;
+
+      const isDm = conversation.metadata?.conversationType === ConversationType.Dm;
+      const isGroup = conversation.metadata?.conversationType === ConversationType.Group;
+
+      // Get peer address for DMs
+      let peerAddress: string | undefined;
+      if (isDm) {
+        try {
+          const members = await conversation.members();
+          const peer = members.find((m) => m.inboxId !== client.inboxId);
+          const peerIdentifier = peer?.accountIdentifiers?.[0];
+          peerAddress = peerIdentifier?.identifier;
+        } catch {
+          // Ignore errors getting peer address
+        }
+      }
+
+      // Get name for groups
+      const name = isGroup ? (conversation as Group).name : undefined;
+
+      return { conversation, peerAddress, name, isGroup };
     },
     enabled: isReady && !!activeConversationId,
   });
 
+  const conversation = conversationQuery.data?.conversation;
+  const peerAddress = conversationQuery.data?.peerAddress;
+  const isGroup = conversationQuery.data?.isGroup;
+  const name = conversationQuery.data?.name;
+
+  // Format display name
+  const displayName = name
+    ?? (isGroup ? "Group" : null)
+    ?? (peerAddress ? `${peerAddress.slice(0, 6)}...${peerAddress.slice(-4)}` : "Chat");
+
   return {
     conversationId: activeConversationId,
-    conversation: conversation.data,
+    conversation,
+    peerAddress,
+    displayName,
     setActiveConversation,
-    isLoading: conversation.isLoading,
+    isLoading: conversationQuery.isLoading,
   };
 };

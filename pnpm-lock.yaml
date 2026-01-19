@@ -162,6 +162,9 @@ importers:
       '@xmtp/content-type-reaction':
         specifier: ^2.0.2
         version: 2.0.2
+      '@xmtp/content-type-text':
+        specifier: ^2.0.2
+        version: 2.0.2
       ai:
         specifier: ^5.0.104
         version: 5.0.104(zod@3.25.76)
@@ -4202,6 +4205,9 @@ packages:
 
   '@xmtp/content-type-reaction@2.0.2':
     resolution: {integrity: sha512-v7wGMycSsUi8NyLR+ytjDhNY4Nr4p8qNwKx8LZPlA8IwLacq2Bp2vKxlOAnGX7m5XP9ivpBNNZvkpR5Limvz1g==}
+
+  '@xmtp/content-type-text@2.0.2':
+    resolution: {integrity: sha512-nlRufOYPrG5sNbruNPCsb6Qk9/jmJ5lMooPsZEo4Dbwda/2S4bSvrrIncT6if7M2SCha3hxtlgJlFGeTtHy4gQ==}
 
   '@xmtp/node-bindings@1.8.0':
     resolution: {integrity: sha512-dyppg1pQNsEdGH13RfsbkbXdnUdjufak6ea1YahjCROgmaJClDpMHcMcSfMzoJzASanU58MwEdCgYUF638NKgw==}
@@ -14063,6 +14069,10 @@ snapshots:
       '@xmtp/node-bindings': 1.8.0
 
   '@xmtp/content-type-reaction@2.0.2':
+    dependencies:
+      '@xmtp/content-type-primitives': 2.0.3
+
+  '@xmtp/content-type-text@2.0.2':
     dependencies:
       '@xmtp/content-type-primitives': 2.0.3
 

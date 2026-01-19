@@ -1,13 +1,10 @@
 // Types
 export type {
   XmtpClient,
-  XmtpConversation,
   XmtpMessage,
   XmtpReaction,
   XmtpClientStatus,
   XmtpState,
-  ConversationWithLastMessage,
-  MessageWithReactions,
 } from "./messages.types";
 
 // Store

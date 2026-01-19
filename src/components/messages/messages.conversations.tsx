@@ -10,7 +10,7 @@ import { useConversations, useMessageStream } from "./messages.hooks";
 import { useMessagesStore } from "./messages.store";
 
 export const ConversationsList = () => {
-  const { status, connect, error, isReady } = useMessages();
+  const { status, connect, error } = useMessages();
   const { data: conversations, isLoading } = useConversations();
   const { activeConversationId, setActiveConversation, unreadCounts } = useMessagesStore();
 
@@ -86,10 +86,14 @@ export const ConversationsList = () => {
 
   return (
     <div className="flex flex-col">
-      {conversations.map(({ conversation, lastMessage }) => {
+      {conversations.map(({ conversation, lastMessage, peerAddress, name, isGroup }) => {
         const isActive = activeConversationId === conversation.id;
         const unreadCount = unreadCounts.get(conversation.id) ?? 0;
-        const isGroup = conversation.metadata?.conversationType === "group";
+
+        // Format display name
+        const displayName = name
+          ?? (isGroup ? "Group" : null)
+          ?? (peerAddress ? `${peerAddress.slice(0, 6)}...${peerAddress.slice(-4)}` : "Chat");
 
         return (
           <button
@@ -110,7 +114,7 @@ export const ConversationsList = () => {
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate font-medium">
-                  {conversation.name ?? (isGroup ? "Group" : "Conversation")}
+                  {displayName}
                 </span>
                 {unreadCount > 0 && (
                   <span className="bg-primary text-primary-foreground flex size-5 shrink-0 items-center justify-center rounded-full text-xs">
@@ -118,11 +122,9 @@ export const ConversationsList = () => {
                   </span>
                 )}
               </div>
-              {lastMessage && (
+              {lastMessage && typeof lastMessage.content === "string" && (
                 <p className="text-muted-foreground truncate text-sm">
-                  {typeof lastMessage.content === "string"
-                    ? lastMessage.content
-                    : "Message"}
+                  {lastMessage.content}
                 </p>
               )}
             </div>

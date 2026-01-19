@@ -1,21 +1,11 @@
-import type { Client, Conversation, DecodedMessage } from "@xmtp/browser-sdk";
+import type { Client, DecodedMessage } from "@xmtp/browser-sdk";
 import type { Reaction } from "@xmtp/content-type-reaction";
 
-export type XmtpClient = Client;
-export type XmtpConversation = Conversation;
+// Use unknown for content types to allow any codec configuration
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type XmtpClient = Client<any>;
 export type XmtpMessage = DecodedMessage;
 export type XmtpReaction = Reaction;
-
-export interface ConversationWithLastMessage {
-  conversation: XmtpConversation;
-  lastMessage?: XmtpMessage;
-  unreadCount: number;
-}
-
-export interface MessageWithReactions {
-  message: XmtpMessage;
-  reactions: XmtpReaction[];
-}
 
 export type XmtpClientStatus =
   | "disconnected"

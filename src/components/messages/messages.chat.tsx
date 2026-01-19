@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
-import { useActiveAccount } from "thirdweb/react";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,12 +12,12 @@ import {
   useConversationMessages,
   useSendMessage,
 } from "./messages.hooks";
-import { useMessagesStore } from "./messages.store";
+import { useMessagesClient } from "./messages.provider";
 import { MessageReactions } from "./messages.reactions";
 import type { XmtpMessage } from "./messages.types";
 
 export const ChatView = () => {
-  const { conversationId, conversation, setActiveConversation, isLoading } =
+  const { conversationId, displayName, setActiveConversation, isLoading } =
     useActiveConversation();
   const { data: messages, isLoading: messagesLoading } =
     useConversationMessages(conversationId);
@@ -50,7 +49,7 @@ export const ChatView = () => {
   return (
     <div className="flex h-full flex-col">
       <ChatHeader
-        title={conversation?.name ?? "Conversation"}
+        title={displayName}
         onBack={() => setActiveConversation(null)}
       />
       <MessageList messages={messages ?? []} conversationId={conversationId} />
@@ -84,8 +83,7 @@ const MessageList = ({
   conversationId: string;
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const account = useActiveAccount();
-  const myAddress = account?.address?.toLowerCase();
+  const { client } = useMessagesClient();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -110,7 +108,7 @@ const MessageList = ({
           <MessageBubble
             key={message.id}
             message={message}
-            isOwn={message.senderInboxId?.toLowerCase() === myAddress}
+            isOwn={message.senderInboxId === client?.inboxId}
             conversationId={conversationId}
           />
         ))}
@@ -130,8 +128,8 @@ const MessageBubble = ({
 }) => {
   const content = message.content;
 
-  // Skip reaction messages in the main list
-  if (typeof content === "object" && content !== null && "reference" in content) {
+  // Skip non-text messages (reactions, group membership changes, etc.)
+  if (typeof content !== "string") {
     return null;
   }
 
@@ -150,9 +148,7 @@ const MessageBubble = ({
             : "bg-muted text-foreground"
         )}
       >
-        <p className="break-words text-sm">
-          {typeof content === "string" ? content : "Unsupported message type"}
-        </p>
+        <p className="break-words text-sm">{content}</p>
       </div>
       <MessageReactions
         message={message}

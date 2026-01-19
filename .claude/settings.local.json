@@ -22,7 +22,9 @@
       "WebFetch(domain:xmtp.org)",
       "WebFetch(domain:docs.neynar.com)",
       "Bash(pnpm check:*)",
-      "WebFetch(domain:portal.thirdweb.com)"
+      "WebFetch(domain:portal.thirdweb.com)",
+      "Bash(pnpm lint:fix:*)",
+      "Bash(pnpm tsc:*)"
     ],
     "deny": [],
     "ask": []

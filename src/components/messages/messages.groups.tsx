@@ -156,7 +156,7 @@ const NewGroupDialog = ({
     if (members.length < 1) return;
     await createGroup.mutateAsync({
       memberAddresses: members,
-      name: groupName.trim() || undefined,
+      groupName: groupName.trim() || undefined,
     });
     onOpenChange(false);
     setGroupName("");

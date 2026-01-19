@@ -79,6 +79,7 @@
     "@upstash/qstash": "^2.8.4",
     "@xmtp/browser-sdk": "^6.1.2",
     "@xmtp/content-type-reaction": "^2.0.2",
+    "@xmtp/content-type-text": "^2.0.2",
     "ai": "^5.0.104",
     "alchemy-sdk": "^3.6.5",
     "clanker-sdk": "^4.2.5",

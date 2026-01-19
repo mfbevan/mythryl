@@ -30,6 +30,7 @@ export const MessageReactions = ({
     await reaction.mutateAsync({
       conversationId,
       messageId: message.id,
+      referenceInboxId: message.senderInboxId,
       emoji,
       action: "added",
     });
@@ -100,12 +101,14 @@ interface ReactionDisplayProps {
   reactions: Array<{ emoji: string; count: number }>;
   conversationId: string;
   messageId: string;
+  referenceInboxId: string;
 }
 
 export const ReactionDisplay = ({
   reactions,
   conversationId,
   messageId,
+  referenceInboxId,
 }: ReactionDisplayProps) => {
   const reaction = useReaction();
 
@@ -115,6 +118,7 @@ export const ReactionDisplay = ({
     await reaction.mutateAsync({
       conversationId,
       messageId,
+      referenceInboxId,
       emoji,
       action: "removed",
     });
