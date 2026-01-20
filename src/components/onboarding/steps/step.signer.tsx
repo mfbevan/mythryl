@@ -120,7 +120,7 @@ export const StepSigner = ({ onComplete }: StepSignerProps) => {
             <>
               {/* QR Code */}
               <div className="rounded-lg border bg-white p-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                { }
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(approvalUrl)}`}
                   alt="Scan to approve signer"

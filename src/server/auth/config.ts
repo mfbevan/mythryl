@@ -40,26 +40,26 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [Farcaster, Base],
   callbacks: {
-    async jwt({ token, user }) {
+    jwt({ token, user }) {
       if (user) {
-        token.id = user.id!;
-        token.fid = user.fid!;
-        token.address = user.address!;
-        token.thirdwebJwt = user.thirdwebJwt!;
-        token.provider = user.provider!;
+        token.id = user.id;
+        token.fid = user.fid;
+        token.address = user.address;
+        token.thirdwebJwt = user.thirdwebJwt;
+        token.provider = user.provider;
       }
       return token;
     },
-    async session({ session, token }) {
+    session({ session, token }) {
       return {
         ...session,
         user: {
           ...session.user,
-          id: token.id,
-          fid: token.fid,
-          address: token.address,
-          thirdwebJwt: token.thirdwebJwt,
-          provider: token.provider,
+          id: token.id as string,
+          fid: token.fid as number,
+          address: token.address as string,
+          thirdwebJwt: token.thirdwebJwt as string,
+          provider: token.provider as AccountType,
         },
       };
     },

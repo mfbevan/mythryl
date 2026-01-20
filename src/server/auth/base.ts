@@ -1,13 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import {
-  createAppClient,
-  viemConnector,
-  type VerifySignInMessageArgs,
-} from "@farcaster/auth-client";
-import { base, optimism } from "thirdweb/chains";
-import { verifyMessage, type Address, type Hex } from "viem";
-
-import { getBaseDomain } from "~/services/url.service";
+import type { Address, Hex } from "viem";
 import { createPublicClient } from "~/services/viem.service";
 import { getFarcasterUserByAddress } from "~/services/neynar.service";
 import { getOrCreateUserAccount } from "../api/routers/users/users.service";
@@ -20,13 +12,13 @@ export const Base = CredentialsProvider({
     message: { label: "Message", type: "text", placeholder: "0x0" },
     signature: { label: "Signature", type: "text", placeholder: "0x0" },
   },
-  async authorize(credentials, request) {
+  async authorize(credentials, _request) {
     const address = credentials.address as Address;
     const message = credentials.message as string;
     const signature = credentials.signature as Hex;
 
     console.log(address, message, signature);
-    const client = createPublicClient(base);
+    const client = createPublicClient();
     const isValid = await client
       .verifyMessage({
         address,
@@ -52,9 +44,9 @@ export const Base = CredentialsProvider({
       "base",
       address.toLowerCase(),
       {
-        username: user?.username!,
-        displayName: user?.display_name!,
-        avatar: user?.pfp_url!,
+        username: user?.username ?? address.toLowerCase(),
+        displayName: user?.display_name ?? undefined,
+        avatar: user?.pfp_url ?? undefined,
         fid,
       },
     );

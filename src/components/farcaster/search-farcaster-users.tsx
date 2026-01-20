@@ -62,7 +62,7 @@ export function SearchFarcasterUsers({
   const [debouncedQuery] = useDebounceValue(searchQuery, debounceMs);
 
   const { data: searchResults, isLoading } =
-    api.players.searchFarcasterUsers.useQuery(
+    api.users.searchFarcasterUsers.useQuery(
       { query: debouncedQuery },
       {
         enabled: debouncedQuery.length > 0,
@@ -133,7 +133,7 @@ export function SearchFarcasterUsers({
             {searchResults?.result?.users &&
               searchResults.result.users.length > 0 && (
                 <CommandGroup>
-                  {searchResults.result.users.map((user) => (
+                  {searchResults.result.users.map((user: FarcasterUser) => (
                     <CommandItem
                       key={user.fid}
                       value={user.fid.toString()}

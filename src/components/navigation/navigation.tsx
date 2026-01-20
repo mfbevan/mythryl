@@ -1,5 +1,4 @@
 import {
-  Antenna,
   Code,
   Cog,
   Handshake,
@@ -9,6 +8,7 @@ import {
   LayoutGrid,
   LifeBuoy,
   MessageSquare,
+  Rss,
   type LucideIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -41,7 +41,7 @@ export const navigation = {
   channels: {
     label: "Channels",
     href: "/channels",
-    icon: Antenna,
+    icon: Rss,
     isAvailable: true,
   },
 

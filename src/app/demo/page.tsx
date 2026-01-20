@@ -348,12 +348,13 @@ export default function DemoPage() {
               const provider = await sdk.wallet.getEthereumProvider();
               if (provider) {
                 const accounts = (await provider.request({ method: "eth_accounts" })) as `0x${string}`[];
-                if (accounts[0]) {
+                const account = accounts[0];
+                if (account) {
                   // Message must be hex-encoded
                   const message = `0x${Buffer.from("Hello from Mythryl!").toString("hex")}` as `0x${string}`;
                   const sig = await provider.request({
                     method: "personal_sign",
-                    params: [message, accounts[0]],
+                    params: [message, account],
                   });
                   log(`personal_sign: ${sig}`);
                 }

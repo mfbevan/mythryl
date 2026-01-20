@@ -3,7 +3,7 @@ import type {
   MiniAppHostCapability,
   SetPrimaryButtonOptions,
 } from "@farcaster/miniapp-core";
-import * as Context from "@farcaster/miniapp-core/dist/context";
+import type * as Context from "@farcaster/miniapp-core/dist/context";
 import type * as ComposeCast from "@farcaster/miniapp-core/dist/actions/ComposeCast";
 import type * as ViewCast from "@farcaster/miniapp-core/dist/actions/ViewCast";
 import type * as ViewProfile from "@farcaster/miniapp-core/dist/actions/ViewProfile";

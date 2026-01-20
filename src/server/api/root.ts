@@ -5,6 +5,7 @@ import { appsRouter } from "./routers/apps/_apps.router";
 import { tokensRouter } from "./routers/tokens/_tokens.router";
 import { signersRouter } from "./routers/signers/signers.router";
 import { onboardingRouter } from "./routers/onboarding/onboarding.router";
+import { feedRouter } from "./routers/feed/feed.router";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   tokens: tokensRouter,
   signers: signersRouter,
   onboarding: onboardingRouter,
+  feed: feedRouter,
 });
 
 // export type definition of API

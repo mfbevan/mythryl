@@ -20,7 +20,7 @@ pnpm lint:fix              # ESLint with auto-fix
 pnpm format:write          # Prettier format
 
 # Database
-pnpm db:push               # Push schema to database
+#. Never run DB migrations I will always run them for you, just tell me when you're ready.
 pnpm db:generate           # Generate migrations
 pnpm db:migrate            # Run migrations
 pnpm db:studio             # Open Drizzle Studio
@@ -85,6 +85,19 @@ Procedures: `publicProcedure` (anyone), `protectedProcedure` (authenticated), `w
 `~/` maps to `src/` (e.g., `~/components/ui/button`)
 
 ## Key Patterns
+
+### Code Style
+
+- **Always use const arrow functions** - never use `function` declarations
+  ```typescript
+  // Good
+  const MyComponent = () => { ... }
+  const handleClick = () => { ... }
+
+  // Bad
+  function MyComponent() { ... }
+  function handleClick() { ... }
+  ```
 
 ### Component Structure
 

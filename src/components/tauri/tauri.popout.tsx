@@ -40,7 +40,7 @@ export function TauriPopout({ instance }: TauriPopoutProps) {
   // Fetch miniapp data if this is a miniapp/preview window
   const isMiniappWindow =
     instance.window.type === "miniapp" || instance.window.type === "preview";
-  const miniappUrl = isMiniappWindow ? instance.window.url : "";
+  const miniappUrl = isMiniappWindow && "url" in instance.window ? instance.window.url : "";
   const { app } = useMiniapp(miniappUrl, { enabled: isMiniappWindow });
 
   if (!isTauri()) return null;

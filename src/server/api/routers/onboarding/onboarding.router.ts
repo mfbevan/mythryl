@@ -37,7 +37,7 @@ export const onboardingRouter = createTRPCRouter({
       await ctx.db
         .update(users)
         .set({
-          address: input.address,
+          address: input.address as `0x${string}`,
           onboardingStatus: "wallet_created",
         })
         .where(eq(users.id, ctx.user.id));

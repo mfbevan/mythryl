@@ -14,9 +14,9 @@ export type WindowSyncMessage =
   | { type: "POPOUT_POPIN"; key: string }
   | { type: "REQUEST_SYNC" };
 
-interface StorageMessage extends WindowSyncMessage {
+type StorageMessage = WindowSyncMessage & {
   _id: number; // Unique ID to ensure storage event fires
-}
+};
 
 /**
  * Send a message via localStorage (triggers storage event in other windows)

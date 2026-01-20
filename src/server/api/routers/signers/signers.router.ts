@@ -29,6 +29,10 @@ export const signersRouter = createTRPCRouter({
 
     const signer = await createSigner();
 
+    if (!ctx.user.fid) {
+      throw new Error("User does not have a Farcaster account");
+    }
+
     const [newSigner] = await ctx.db
       .insert(farcasterSigners)
       .values({
@@ -85,6 +89,9 @@ export const signersRouter = createTRPCRouter({
     if (!ctx.user.address) {
       throw new Error("No wallet address");
     }
+    if (!ctx.user.fid) {
+      throw new Error("User does not have a Farcaster account");
+    }
 
     const deadline = BigInt(Math.floor(Date.now() / 1000) + 86400); // 24 hours
     const key = ctx.user.address.toLowerCase().padEnd(66, "0");
@@ -126,13 +133,11 @@ export const signersRouter = createTRPCRouter({
 
       const result =
         await neynar.registerSignedKeyForDeveloperManagedAuthAddress({
-          registerAuthAddressDeveloperManagedSignedKeyReqBody: {
-            address: ctx.user.address,
-            signature: input.signature,
-            app_fid: Number(env.NEYNAR_APP_FID),
-            deadline: input.deadline,
-            sponsor: { sponsored_by_neynar: true },
-          },
+          address: ctx.user.address,
+          signature: input.signature,
+          appFid: Number(env.NEYNAR_APP_FID),
+          deadline: input.deadline,
+          sponsor: { sponsored_by_neynar: true },
         });
 
       // Update user's auth address status
@@ -152,13 +157,16 @@ export const signersRouter = createTRPCRouter({
     if (!ctx.user.address) {
       throw new Error("No wallet address");
     }
+    if (!ctx.user.fid) {
+      throw new Error("User does not have a Farcaster account");
+    }
 
     const { getLiteFarcasterUser } = await import("~/services/neynar.service");
     const farcasterUser = await getLiteFarcasterUser(ctx.user.fid);
 
     // Check if wallet address is in user's auth_addresses
     const isApproved = farcasterUser.auth_addresses?.some(
-      (addr) => addr.toLowerCase() === ctx.user.address?.toLowerCase(),
+      (addr) => String(addr).toLowerCase() === ctx.user.address?.toLowerCase(),
     );
 
     if (isApproved) {

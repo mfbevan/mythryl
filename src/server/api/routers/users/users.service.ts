@@ -46,6 +46,7 @@ export const getUserById = (db: DB) => async (userId: string) => {
   return {
     id: player.id,
     fid: player.fid,
+    address: player.address,
     accountType: userAccount.accountType,
     accountId: userAccount.accountId,
     username: userAccount.username,
