@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useDebounceValue } from "usehooks-ts";
 import { Check } from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Command,
@@ -61,7 +62,7 @@ export function SearchFarcasterUsers({
   const [debouncedQuery] = useDebounceValue(searchQuery, debounceMs);
 
   const { data: searchResults, isLoading } =
-    api.users.searchFarcasterUsers.useQuery(
+    api.players.searchFarcasterUsers.useQuery(
       { query: debouncedQuery },
       {
         enabled: debouncedQuery.length > 0,

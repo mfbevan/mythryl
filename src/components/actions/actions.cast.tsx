@@ -5,7 +5,6 @@ import { Check, MessageCircle } from "lucide-react";
 import { FarcasterIcon } from "../farcaster/farcaster.icon";
 import { Button } from "../ui/button";
 import sdk from "@farcaster/miniapp-sdk";
-import { useIsMiniApp } from "../farcaster/farcaster.hooks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export const ActionsCast = ({
@@ -13,7 +12,6 @@ export const ActionsCast = ({
 }: {
   embeds: [] | [string] | [string, string];
 }) => {
-  const [isMiniApp] = useIsMiniApp();
   const [casted, setCasted] = useState(false);
 
   const onAction = () => {
@@ -21,8 +19,6 @@ export const ActionsCast = ({
     setCasted(true);
     setTimeout(() => setCasted(false), 3000);
   };
-
-  if (!isMiniApp) return null;
 
   return (
     <Tooltip>

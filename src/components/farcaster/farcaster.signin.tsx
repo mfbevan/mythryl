@@ -1,18 +1,14 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import sdk from "@farcaster/miniapp-sdk";
+import "~/styles/farcaster-auth.css";
+
 import { useSession, signIn, getCsrfToken } from "next-auth/react";
 import { SignInButton, type StatusAPIResponse } from "@farcaster/auth-kit";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { FarcasterIcon } from "./farcaster.icon";
 
-import {
-  useFarcasterContext,
-  useIsMiniApp,
-} from "~/components/farcaster/farcaster.hooks";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -22,18 +18,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Spinner } from "~/components/ui/spinner";
 import { cn } from "~/lib/utils";
 
 export const FarcasterSignIn = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const session = useSession();
-  const [ctx] = useFarcasterContext();
-  const [isMiniApp, miniAppState] = useIsMiniApp();
   const signInButtonRef = useRef<HTMLDivElement>(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const isLoginPage = pathname === "/login";
+  const isSignInPage = pathname === "/signin";
 
   const getRedirectUrl = useCallback(() => {
     if (typeof window === "undefined") return undefined;
@@ -41,50 +35,18 @@ export const FarcasterSignIn = ({ className }: { className?: string }) => {
     return params.get("redirectUrl") ?? params.get("callback") ?? undefined;
   }, []);
 
-  useEffect(() => {
-    if (isMiniApp) {
-      console.log("Auto Sign In");
-      void handleFarcasterSignIn();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMiniApp]);
-
-  const handleFarcasterSignIn = useCallback(async () => {
-    const isMiniApp = await sdk.isInMiniApp().catch(() => false);
-    const nonce = await getCsrfToken();
-    if (!nonce) throw new Error("Unable to generate nonce");
-
-    if (isMiniApp) {
-      const auth = await sdk.actions.signIn({
-        nonce,
-        acceptAuthAddress: true,
-      });
-
-      await signIn("farcaster", {
-        message: auth.message,
-        signature: auth.signature as `0x${string}`,
-        username: ctx?.user.username,
-        displayName: ctx?.user.displayName,
-        avatar: ctx?.user.pfpUrl,
-        redirect: isLoginPage,
-        callbackUrl: isLoginPage ? getRedirectUrl() : undefined,
-      });
-    } else {
-      const button = signInButtonRef.current?.querySelector("button");
-      button?.click();
-    }
+  const handleSignIn = useCallback(async () => {
+    setIsSigningIn(true);
+    // Close our dialog to show the Farcaster auth-kit modal
     setShowDialog(false);
-  }, [ctx?.user, isLoginPage, getRedirectUrl]);
-
-  const farcasterSignIn = useMutation({
-    mutationFn: handleFarcasterSignIn,
-    onSuccess: () => {
-      console.log("Sign in successful");
-    },
-    onError: (e) => {
-      console.error("Sign in failed:", e);
-    },
-  });
+    // Wait for dialog to close before opening auth-kit modal
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    const button = signInButtonRef.current?.querySelector("button");
+    if (button) {
+      button.click();
+    }
+    setIsSigningIn(false);
+  }, []);
 
   const handleSuccess = useCallback(
     (res: StatusAPIResponse) => {
@@ -94,21 +56,17 @@ export const FarcasterSignIn = ({ className }: { className?: string }) => {
         username: res.username,
         displayName: res.displayName,
         avatar: res.pfpUrl,
-        redirect: isLoginPage,
-        callbackUrl: isLoginPage ? getRedirectUrl() : undefined,
+        redirect: isSignInPage,
+        callbackUrl: isSignInPage ? getRedirectUrl() : undefined,
       }).catch(console.error);
     },
-    [isLoginPage, getRedirectUrl],
+    [isSignInPage, getRedirectUrl],
   );
 
   const handleSignUp = () => {
     window.open("https://farcaster.xyz/~/r/mfbevan.eth", "_blank");
     setShowDialog(false);
   };
-
-  const showMiniAppLoading =
-    isMiniApp &&
-    (session.status !== "authenticated" || farcasterSignIn.isPending);
 
   return (
     <>
@@ -120,28 +78,13 @@ export const FarcasterSignIn = ({ className }: { className?: string }) => {
         />
       </div>
 
-      {showMiniAppLoading && (
-        <div className={cn("dark flex flex-col items-center gap-1", className)}>
-          <Spinner className="h-5 w-5" />
-          <p className="text-muted-foreground text-xs">Signing in...</p>
-        </div>
-      )}
-
       <Button
         onClick={() => setShowDialog(true)}
         variant="outline"
-        className={cn(
-          className,
-          (miniAppState.isLoading ||
-            miniAppState.isFetching ||
-            isMiniApp ||
-            session.status === "loading" ||
-            farcasterSignIn.isPending) &&
-            "hidden",
-        )}
-        isLoading={farcasterSignIn.isPending}
+        className={cn(className)}
+        isLoading={session.status === "loading" || isSigningIn}
       >
-        <FarcasterIcon className="text-violet-500" />
+        <FarcasterIcon />
         Farcaster
       </Button>
 
@@ -149,7 +92,7 @@ export const FarcasterSignIn = ({ className }: { className?: string }) => {
         <DialogContent className="max-w-sm md:max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <FarcasterIcon className="text-violet-500" /> Sign in With
+              <FarcasterIcon className="text-farcaster-500" /> Sign in With
               Farcaster
             </DialogTitle>
             <DialogDescription>
@@ -161,15 +104,15 @@ export const FarcasterSignIn = ({ className }: { className?: string }) => {
               onClick={handleSignUp}
               variant="secondary"
               className="flex-1"
-              disabled={farcasterSignIn.isPending}
+              disabled={isSigningIn}
             >
               Sign Up
             </Button>
             <Button
-              onClick={() => farcasterSignIn.mutate()}
-              isLoading={farcasterSignIn.isPending}
-              disabled={farcasterSignIn.isPending}
-              className="flex-1 bg-violet-500 hover:bg-violet-600"
+              onClick={handleSignIn}
+              isLoading={isSigningIn}
+              disabled={isSigningIn}
+              className="bg-farcaster-500 hover:bg-farcaster-600 flex-1"
             >
               Sign In
             </Button>

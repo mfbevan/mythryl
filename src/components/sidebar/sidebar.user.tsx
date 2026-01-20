@@ -53,7 +53,7 @@ export const SidebarUser = () => {
 
   if (!user)
     return (
-      <Link href={`/login?redirectUrl=${encodeURIComponent(pathname)}`}>
+      <Link href={`/signin?redirectUrl=${encodeURIComponent(pathname)}`}>
         <Button className="w-full" size="lg">
           Sign In / Sign Up
         </Button>

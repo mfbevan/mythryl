@@ -16,6 +16,8 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     // Farcaster
     NEYNAR_API_KEY: z.string(),
+    NEYNAR_APP_FID: z.string(),
+    FARCASTER_DEVELOPER_MNEMONIC: z.string(),
     // Thirdweb
     THIRDWEB_SECRET_KEY: z.string(),
     THIRDWEB_AUTH_PRIVATE_KEY: z.string(),
@@ -52,6 +54,8 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     // Farcaster
     NEYNAR_API_KEY: process.env.NEYNAR_API_KEY,
+    NEYNAR_APP_FID: process.env.NEYNAR_APP_FID,
+    FARCASTER_DEVELOPER_MNEMONIC: process.env.FARCASTER_DEVELOPER_MNEMONIC,
     // Thirdweb
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
     THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,

@@ -24,7 +24,8 @@
       "Bash(pnpm check:*)",
       "WebFetch(domain:portal.thirdweb.com)",
       "Bash(pnpm lint:fix:*)",
-      "Bash(pnpm tsc:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,9 +1,10 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { usersRouter } from "./routers/users/users.router";
 import { filesRouter } from "./routers/files/_file.router";
-import { thirdwebRouter } from "./routers/auth/thirdweb.router";
 import { appsRouter } from "./routers/apps/_apps.router";
 import { tokensRouter } from "./routers/tokens/_tokens.router";
+import { signersRouter } from "./routers/signers/signers.router";
+import { onboardingRouter } from "./routers/onboarding/onboarding.router";
 
 /**
  * This is the primary router for your server.
@@ -13,9 +14,10 @@ import { tokensRouter } from "./routers/tokens/_tokens.router";
 export const appRouter = createTRPCRouter({
   users: usersRouter,
   files: filesRouter,
-  thirdweb: thirdwebRouter,
   apps: appsRouter,
   tokens: tokensRouter,
+  signers: signersRouter,
+  onboarding: onboardingRouter,
 });
 
 // export type definition of API

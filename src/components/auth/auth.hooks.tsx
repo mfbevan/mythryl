@@ -19,7 +19,7 @@ export const useSignOut = () => {
         .promise(
           async () => {
             return await signOut({
-              callbackUrl: "/login",
+              callbackUrl: "/signin",
             });
           },
           {

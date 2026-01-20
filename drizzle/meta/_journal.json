@@ -8,6 +8,20 @@
       "when": 1768737305875,
       "tag": "0000_zippy_husk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768868288267,
+      "tag": "0001_thin_garia",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768869602340,
+      "tag": "0002_thick_strong_guy",
+      "breakpoints": true
     }
   ]
 }

@@ -22,7 +22,6 @@ import {
   type NavigationItem,
 } from "../navigation/navigation";
 import { usePathname } from "next/navigation";
-import { SidebarFrame } from "./sidebar.frame";
 
 const createNavItem = (item: NavigationItem, pathname: string) => {
   return {
@@ -74,7 +73,6 @@ export const SidebarMain = ({
         <SidebarSecondary items={secondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarFrame />
         <SidebarUser />
       </SidebarFooter>
     </Sidebar>

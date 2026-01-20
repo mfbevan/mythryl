@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import type { ConnectButtonProps } from "thirdweb/react";
 import {
-  AccountAddress,
-  AccountAvatar,
-  AccountProvider,
   darkTheme,
   lightTheme,
   ConnectButton as ThirdwebConnectButton,
@@ -16,24 +13,9 @@ import {
   useWalletImage,
 } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
-import { shortenAddress } from "thirdweb/utils";
-import { Moon, Sun, User, Wallet } from "lucide-react";
-import { Suspense } from "react";
 import { useTheme } from "next-themes";
-import Link from "next/link";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { ChainIcon } from "../chains/chain-icon";
-import { useFarcasterContext } from "../farcaster/farcaster.hooks";
 import { farcasterWallet } from "../farcaster/farcaster.wallet";
 
-import { Button } from "~/components/ui/button";
 import { activeChain, client } from "~/services/thirdweb.service";
 import { api } from "~/trpc/react";
 import { defaultDescription, defaultTitle } from "~/services/metadata.service";

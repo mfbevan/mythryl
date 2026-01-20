@@ -2,7 +2,6 @@
 
 import { SessionProvider, useSession } from "next-auth/react";
 import { LoginAuth } from "~/components/auth/login/login.auth";
-import { LoginSocials } from "~/components/auth/login/login.socials";
 import { LoginVersion } from "~/components/auth/login/login.version";
 import { LoginTheme } from "~/components/auth/login/login.theme";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -35,7 +34,6 @@ function LoginContent() {
     <div className="flex h-screen w-screen flex-col items-center justify-center">
       <LoginAuth />
       <LoginTheme />
-      <LoginSocials />
       <LoginVersion />
     </div>
   );
@@ -46,7 +44,13 @@ export default function LoginPage() {
     <ThirdwebProvider>
       <SessionProvider>
         <FarcasterProvider>
-          <Suspense fallback={<div className="flex h-screen w-screen items-center justify-center">Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="flex h-screen w-screen items-center justify-center">
+                Loading...
+              </div>
+            }
+          >
             <LoginContent />
           </Suspense>
         </FarcasterProvider>

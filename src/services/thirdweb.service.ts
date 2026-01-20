@@ -1,6 +1,6 @@
 import { createThirdwebClient } from "thirdweb";
 import { base } from "thirdweb/chains";
-import { generateAccount, privateKeyToAccount } from "thirdweb/wallets";
+import { generateAccount } from "thirdweb/wallets";
 
 import { env } from "~/env.app";
 import { resolveChain, type RawChain } from "./chains.service";
