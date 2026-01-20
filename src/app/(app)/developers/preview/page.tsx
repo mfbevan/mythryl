@@ -24,7 +24,7 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { SidebarPage } from "~/components/sidebar/sidebar.page";
-import { useWindowActions } from "~/components/windows/provider";
+import { useGatedWindowActions } from "~/components/windows/use-gated-window-actions";
 import { useMiniapp } from "~/components/windows/windows.hooks";
 import { DevelopersHeader } from "../_components/developers.header";
 import { cn } from "~/lib/utils";
@@ -43,7 +43,7 @@ export default function PreviewPage() {
   const [url, setUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [logs, setLogs] = useState<NetworkLog[]>([]);
-  const { addWindow } = useWindowActions();
+  const { addWindow } = useGatedWindowActions();
 
   const addLog = useCallback((log: Omit<NetworkLog, "id" | "timestamp">) => {
     setLogs((prev) => [

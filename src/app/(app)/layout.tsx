@@ -12,7 +12,7 @@ import { FarcasterProvider } from "~/components/farcaster/farcaster.provider";
 import { MessagesProvider } from "~/components/messages";
 import { WindowsProvider } from "~/components/windows/provider";
 import { WindowManager } from "~/components/windows/windows.manager";
-import { OnboardingGate } from "~/components/onboarding";
+import { OnboardingGate, OnboardingModal } from "~/components/onboarding";
 import { env } from "~/env.app";
 
 export default function AppLayout({
@@ -22,6 +22,7 @@ export default function AppLayout({
     <ThirdwebProvider>
       <SessionProvider>
         <OnboardingGate>
+          <OnboardingModal />
           <FarcasterProvider>
             <MessagesProvider>
               <WindowsProvider>

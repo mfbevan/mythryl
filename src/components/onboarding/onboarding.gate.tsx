@@ -6,8 +6,9 @@ import { useEffect } from "react";
 import { AlertCircle, ExternalLink } from "lucide-react";
 
 import { OnboardingFlow } from "./onboarding.flow";
-import { useOnboardingStatus, useHasFid } from "./onboarding.hooks";
+import { useOnboardingStatus, useHasFid, useIsReadonly } from "./onboarding.hooks";
 
+import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Spinner } from "~/components/ui/spinner";
 
@@ -20,7 +21,19 @@ export const OnboardingGate = ({ children }: OnboardingGateProps) => {
   const router = useRouter();
   const isAuthenticated = session.status === "authenticated";
   const { isComplete, isLoading, isError } = useOnboardingStatus();
+  const isReadonly = useIsReadonly();
   const hasFid = useHasFid();
+  const utils = api.useUtils();
+
+  const updateStatus = api.onboarding.updateStatus.useMutation({
+    onSuccess: () => {
+      void utils.onboarding.getStatus.invalidate();
+    },
+  });
+
+  const handleSkipOnboarding = () => {
+    updateStatus.mutate("readonly");
+  };
 
   // Redirect unauthenticated users to signin
   useEffect(() => {
@@ -68,8 +81,8 @@ export const OnboardingGate = ({ children }: OnboardingGateProps) => {
     return <FarcasterRequiredScreen />;
   }
 
-  // Onboarding not complete - show onboarding flow
-  if (!isComplete) {
+  // Onboarding not complete and not readonly - show onboarding flow
+  if (!isComplete && !isReadonly) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <div className="mb-8 text-center">
@@ -79,11 +92,20 @@ export const OnboardingGate = ({ children }: OnboardingGateProps) => {
           </p>
         </div>
         <OnboardingFlow />
+        <div className="mt-6">
+          <Button
+            variant="ghost"
+            onClick={handleSkipOnboarding}
+            disabled={updateStatus.isPending}
+          >
+            Continue without setup
+          </Button>
+        </div>
       </div>
     );
   }
 
-  // Onboarding complete - render app content
+  // Onboarding complete or readonly - render app content
   return <>{children}</>;
 };
 

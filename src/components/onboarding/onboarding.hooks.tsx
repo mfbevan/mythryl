@@ -29,3 +29,13 @@ export const useHasFid = () => {
   const session = useSession();
   return !!session.data?.user?.fid;
 };
+
+export const useIsReadonly = () => {
+  const { status } = useOnboardingStatus();
+  return status === "readonly";
+};
+
+export const useCanPerformActions = () => {
+  const { isComplete } = useOnboardingStatus();
+  return isComplete;
+};

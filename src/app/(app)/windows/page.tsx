@@ -1,11 +1,11 @@
 "use client";
 
-import { useWindowActions } from "~/components/windows/provider";
+import { useGatedWindowActions } from "~/components/windows/use-gated-window-actions";
 import { Button } from "~/components/ui/button";
 
 export default function WindowsPage() {
   const { addWindow, minimizeAllWindows, removeAllWindows } =
-    useWindowActions();
+    useGatedWindowActions();
 
   return (
     <div className="space-y-6 p-8">

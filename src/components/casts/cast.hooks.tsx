@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "~/trpc/react";
+import { useRequireOnboarding } from "~/components/onboarding/use-require-onboarding";
 import type { FeedType, Cast } from "~/server/api/routers/feed/feed.schema";
 
 interface UseCastInteractionsOptions {
@@ -9,6 +10,7 @@ interface UseCastInteractionsOptions {
 
 export const useCastInteractions = ({ feedType }: UseCastInteractionsOptions = {}) => {
   const utils = api.useUtils();
+  const { requireOnboarding } = useRequireOnboarding("Complete setup to interact with casts");
 
   const likeMutation = api.feed.like.useMutation({
     onMutate: async ({ castHash }) => {
@@ -199,6 +201,7 @@ export const useCastInteractions = ({ feedType }: UseCastInteractionsOptions = {
   });
 
   const handleLike = (hash: string, isLiked: boolean) => {
+    if (requireOnboarding()) return;
     if (isLiked) {
       unlikeMutation.mutate({ castHash: hash });
     } else {
@@ -207,6 +210,7 @@ export const useCastInteractions = ({ feedType }: UseCastInteractionsOptions = {
   };
 
   const handleRecast = (hash: string, isRecasted: boolean) => {
+    if (requireOnboarding()) return;
     if (isRecasted) {
       unrecastMutation.mutate({ castHash: hash });
     } else {

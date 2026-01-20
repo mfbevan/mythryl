@@ -58,6 +58,7 @@ export const onboardingRouter = createTRPCRouter({
         "signer_approved",
         "auth_address_pending",
         "complete",
+        "readonly",
       ];
       if (!validStatuses.includes(status)) {
         throw new Error(`Invalid onboarding status: ${status}`);

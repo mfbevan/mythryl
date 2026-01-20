@@ -22,6 +22,7 @@ export const onboardingStatus = pgEnum("onboarding_status", [
   "signer_approved",
   "auth_address_pending",
   "complete",
+  "readonly",
 ]);
 export type OnboardingStatus = (typeof onboardingStatus.enumValues)[number];
 
