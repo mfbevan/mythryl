@@ -147,4 +147,27 @@ export const signersRouter = createTRPCRouter({
 
       return { approvalUrl: result.auth_address_approval_url };
     }),
+
+  checkAuthAddressApproval: protectedProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.user.address) {
+      throw new Error("No wallet address");
+    }
+
+    const { getLiteFarcasterUser } = await import("~/services/neynar.service");
+    const farcasterUser = await getLiteFarcasterUser(ctx.user.fid);
+
+    // Check if wallet address is in user's auth_addresses
+    const isApproved = farcasterUser.auth_addresses?.some(
+      (addr) => addr.toLowerCase() === ctx.user.address?.toLowerCase(),
+    );
+
+    if (isApproved) {
+      await ctx.db
+        .update(users)
+        .set({ authAddressStatus: "approved" })
+        .where(eq(users.id, ctx.user.id));
+    }
+
+    return { status: isApproved ? "approved" : "pending" };
+  }),
 });

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Wallet } from "lucide-react";
 import { inAppWallet } from "thirdweb/wallets";
+import { useSetActiveWallet } from "thirdweb/react";
 
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
@@ -18,6 +19,7 @@ interface StepWalletProps {
  */
 export const StepWallet = ({ onComplete }: StepWalletProps) => {
   const utils = api.useUtils();
+  const setActiveWallet = useSetActiveWallet();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +51,9 @@ export const StepWallet = ({ onComplete }: StepWalletProps) => {
       if (!account?.address) {
         throw new Error("Failed to get wallet address");
       }
+
+      // Set as active wallet in Thirdweb context for subsequent steps
+      setActiveWallet(wallet);
 
       // Save address to server
       await setWalletAddress.mutateAsync({ address: account.address });

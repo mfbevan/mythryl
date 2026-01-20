@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { CheckCircle, Circle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 
 import { useOnboardingStatus } from "./onboarding.hooks";
 import { StepWallet } from "./steps/step.wallet";
 import { StepSigner } from "./steps/step.signer";
+import { StepAuthAddress } from "./steps/step.auth-address";
 
 import { api } from "~/trpc/react";
 import { cn } from "~/lib/utils";
@@ -17,6 +18,11 @@ const STEPS = [
     id: "signer",
     label: "Create Signer",
     statuses: ["wallet_created", "signer_pending"],
+  },
+  {
+    id: "auth-address",
+    label: "Register Auth",
+    statuses: ["signer_approved", "auth_address_pending"],
   },
 ] as const;
 
@@ -55,7 +61,11 @@ export const OnboardingFlow = () => {
         );
       case "signer":
         return (
-          <StepSigner onComplete={() => handleStepComplete("complete")} />
+          <StepSigner onComplete={() => handleStepComplete("signer_approved")} />
+        );
+      case "auth-address":
+        return (
+          <StepAuthAddress onComplete={() => handleStepComplete("complete")} />
         );
     }
   };

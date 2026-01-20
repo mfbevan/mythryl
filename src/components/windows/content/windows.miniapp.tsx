@@ -1,15 +1,24 @@
 "use client";
 
+import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
-import Image from "next/image";
+
 import { useMiniapp } from "../windows.hooks";
+import { useWindowActions } from "../provider";
+import { MiniAppHost } from "~/components/miniapps";
 
 interface MiniappWindowContentProps {
   url: string;
+  windowId: string;
 }
 
-export const MiniappWindowContent = ({ url }: MiniappWindowContentProps) => {
+export const MiniappWindowContent = ({ url, windowId }: MiniappWindowContentProps) => {
   const { app, isLoading, isError } = useMiniapp(url);
+  const { removeWindow } = useWindowActions();
+
+  const handleClose = useCallback(() => {
+    removeWindow(windowId);
+  }, [removeWindow, windowId]);
 
   if (isLoading) {
     return (
@@ -20,51 +29,17 @@ export const MiniappWindowContent = ({ url }: MiniappWindowContentProps) => {
     );
   }
 
-  if (isError || !app) {
-    const fullUrl = url.startsWith("http") ? url : `https://${url}`;
-    return (
-      <div className="relative h-full w-full overflow-hidden">
-        <iframe
-          src={fullUrl}
-          className="absolute inset-0 h-full w-full border-0"
-          allow="clipboard-write; web-share"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-        />
-      </div>
-    );
-  }
+  // Use MiniAppHost for proper SDK integration
+  const fullUrl = url.startsWith("http") ? url : `https://${url}`;
+  const appUrl = app?.config.homeUrl ?? fullUrl;
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
-      {app.config.splashImageUrl && (
-        <div
-          className="absolute inset-0 z-20 flex items-center justify-center transition-opacity duration-300"
-          style={{
-            backgroundColor: app.config.splashBackgroundColor ?? "#000",
-          }}
-        >
-          <Image
-            src={app.config.splashImageUrl}
-            alt={app.config.name}
-            width={128}
-            height={128}
-            className="rounded-xs object-contain"
-            unoptimized
-          />
-        </div>
-      )}
-      <iframe
-        src={app.config.homeUrl}
-        className="absolute inset-0 z-10 h-full w-full border-0"
-        allow="clipboard-write; web-share"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-        onLoad={(e) => {
-          const splash = e.currentTarget.previousElementSibling;
-          if (splash) {
-            splash.classList.add("opacity-0", "pointer-events-none");
-          }
-        }}
-      />
-    </div>
+    <MiniAppHost
+      url={appUrl}
+      onClose={handleClose}
+      splashImageUrl={app?.config.splashImageUrl}
+      splashBackgroundColor={app?.config.splashBackgroundColor}
+      appName={app?.config.name}
+    />
   );
 };

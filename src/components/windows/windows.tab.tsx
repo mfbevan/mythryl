@@ -97,7 +97,7 @@ export function WindowTab({ instance }: WindowTabProps) {
           className="overflow-hidden border-t"
           style={{ width: WINDOW_WIDTH, height: WINDOW_HEIGHT - HEADER_HEIGHT }}
         >
-          <WindowContent window={instance.window} />
+          <WindowContent window={instance.window} windowId={instance.key} />
         </div>
       )}
     </motion.div>

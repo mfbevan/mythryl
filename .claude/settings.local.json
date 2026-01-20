@@ -25,7 +25,9 @@
       "WebFetch(domain:portal.thirdweb.com)",
       "Bash(pnpm lint:fix:*)",
       "Bash(pnpm tsc:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": [],
     "ask": []

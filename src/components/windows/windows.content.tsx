@@ -9,9 +9,10 @@ import { ConversationWindowContent } from "./content/windows.conversation";
 
 interface WindowContentProps {
   window: Window;
+  windowId: string;
 }
 
-export function WindowContent({ window }: WindowContentProps) {
+export function WindowContent({ window, windowId }: WindowContentProps) {
   switch (window.type) {
     case "wallet":
       return <WalletWindowContent />;
@@ -19,7 +20,7 @@ export function WindowContent({ window }: WindowContentProps) {
       return <MessageWindowContent />;
     case "miniapp":
     case "preview":
-      return <MiniappWindowContent url={window.url} />;
+      return <MiniappWindowContent url={window.url} windowId={windowId} />;
     case "token":
       return <TokenWindowContent chainId={window.chainId} address={window.address} />;
     case "conversation":

@@ -161,7 +161,7 @@ export function WindowManager() {
 
             {/* Content */}
             <div className="flex-1 overflow-auto">
-              <WindowContent window={activeWindow.window} />
+              <WindowContent window={activeWindow.window} windowId={activeWindow.key} />
             </div>
 
             {/* Tab bar */}

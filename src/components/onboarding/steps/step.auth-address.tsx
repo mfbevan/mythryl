@@ -22,8 +22,27 @@ export const StepAuthAddress = ({ onComplete }: StepAuthAddressProps) => {
 
   const onboardingStatus = api.onboarding.getStatus.useQuery(undefined, {
     refetchOnWindowFocus: true,
-    refetchInterval: isWaitingForApproval ? 3000 : false,
   });
+
+  const checkApproval = api.signers.checkAuthAddressApproval.useMutation({
+    onSuccess: (data) => {
+      if (data.status === "approved") {
+        setIsWaitingForApproval(false);
+        void completeOnboarding.mutateAsync();
+      }
+    },
+  });
+
+  // Poll for approval when waiting
+  useEffect(() => {
+    if (!isWaitingForApproval) return;
+
+    const interval = setInterval(() => {
+      void checkApproval.mutateAsync();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isWaitingForApproval]);
 
   const typedDataQuery = api.signers.getAuthAddressTypedData.useQuery(
     undefined,
@@ -97,6 +116,7 @@ export const StepAuthAddress = ({ onComplete }: StepAuthAddressProps) => {
   const isApproved = onboardingStatus.data?.authAddressStatus === "approved";
   const isPending = isWaitingForApproval || !!approvalUrl;
   const canSign = !!typedDataQuery.data && !!account && !isPending;
+  const needsWalletReconnect = !account && !isPending && !isApproved;
 
   return (
     <div className="flex flex-col items-center gap-4 text-center">
@@ -115,6 +135,21 @@ export const StepAuthAddress = ({ onComplete }: StepAuthAddressProps) => {
           you to sign in using your wallet address.
         </p>
       </div>
+
+      {needsWalletReconnect && (
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-muted-foreground text-sm">
+            Please reconnect your wallet to continue.
+          </p>
+          <Button
+            onClick={() => window.location.reload()}
+            variant="outline"
+            className="w-full max-w-xs"
+          >
+            Refresh Page
+          </Button>
+        </div>
+      )}
 
       {canSign && (
         <Button

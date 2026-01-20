@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
+import { BaseSignIn } from "~/components/base/base.signin";
 import { FarcasterSignIn } from "~/components/farcaster/farcaster.signin";
 import { navigation } from "~/components/navigation/navigation";
 
@@ -19,32 +20,11 @@ import { cn } from "~/lib/utils";
 
 export const LoginAuth = ({ className }: { className?: string }) => {
   const theme = useTheme();
-  const isLight = theme.theme === "light";
 
   const getCallbackUrl = () =>
     new URLSearchParams(window.location.search).get("redirectUrl") ??
     new URLSearchParams(window.location.search).get("callback") ??
     navigation.home.href;
-
-  const loginGoogle = async () => {
-    await signIn("google", { redirectTo: getCallbackUrl() });
-  };
-
-  const loginGithub = async () => {
-    await signIn("github", { redirectTo: getCallbackUrl() });
-  };
-
-  const loginDiscord = async () => {
-    await signIn("discord", { redirectTo: getCallbackUrl() });
-  };
-
-  const loginApple = async () => {
-    await signIn("apple", { redirectTo: getCallbackUrl() });
-  };
-
-  const loginTwitter = async () => {
-    await signIn("twitter");
-  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -65,6 +45,8 @@ export const LoginAuth = ({ className }: { className?: string }) => {
           </Badge>
           <FarcasterSignIn />
         </div>
+
+        <BaseSignIn />
 
         {/* <Button variant="outline" className="w-full" onClick={loginGoogle}>
           <Google />

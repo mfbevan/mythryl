@@ -4,15 +4,16 @@ import { useWindowActions } from "~/components/windows/provider";
 import { Button } from "~/components/ui/button";
 
 export default function WindowsPage() {
-  const { addWindow, minimizeAllWindows, removeAllWindows } = useWindowActions();
+  const { addWindow, minimizeAllWindows, removeAllWindows } =
+    useWindowActions();
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="space-y-6 p-8">
       <h1 className="text-2xl font-bold">Window Manager Demo</h1>
 
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold mb-2">Singleton Windows</h2>
+          <h2 className="mb-2 text-lg font-semibold">Singleton Windows</h2>
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => addWindow({ type: "wallet" })}>
               Open Wallet
@@ -24,25 +25,40 @@ export default function WindowsPage() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-2">Miniapp Windows</h2>
+          <h2 className="mb-2 text-lg font-semibold">Miniapp Windows</h2>
           <div className="flex flex-wrap gap-2">
             <Button
               variant="secondary"
-              onClick={() => addWindow({ type: "miniapp", url: "https://warptown.com" })}
+              onClick={() =>
+                addWindow({ type: "miniapp", url: "https://warptown.com" })
+              }
             >
               Open Warptown
             </Button>
             <Button
               variant="secondary"
-              onClick={() => addWindow({ type: "miniapp", url: "https://example.com" })}
+              onClick={() =>
+                addWindow({ type: "miniapp", url: "https://example.com" })
+              }
             >
               Open example.com
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                addWindow({
+                  type: "miniapp",
+                  url: "https://participated-ent-arguments-coordination.trycloudflare.com/demo",
+                })
+              }
+            >
+              Open Test
             </Button>
           </div>
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-2">Token Windows</h2>
+          <h2 className="mb-2 text-lg font-semibold">Token Windows</h2>
           <div className="flex flex-wrap gap-2">
             <Button
               variant="secondary"
@@ -84,7 +100,7 @@ export default function WindowsPage() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-2">Actions</h2>
+          <h2 className="mb-2 text-lg font-semibold">Actions</h2>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={minimizeAllWindows}>
               Minimize All
