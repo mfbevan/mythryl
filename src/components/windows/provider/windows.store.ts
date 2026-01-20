@@ -2,6 +2,8 @@ import { createStore } from "zustand/vanilla";
 
 import type { Window, WindowInstance } from "../windows.schema";
 import { getWindowKey, normalizeUrl } from "../windows.utils";
+import { broadcastWindowState, type PopoutWindowState } from "~/components/tauri";
+import { focusPopOutWindow } from "~/lib/tauri";
 
 export interface WindowsStore {
   windows: Map<string, WindowInstance>;
@@ -19,6 +21,8 @@ export interface WindowsStore {
   minimizeAllWindows: () => void;
   removeAllWindows: () => void;
   reorderWindows: (activeKey: string, overKey: string) => void;
+  popOutWindow: (key: string) => void;
+  popInWindow: (key: string) => void;
 }
 
 export const createWindowsStore = () => {
@@ -97,6 +101,12 @@ export const createWindowsStore = () => {
       const { windows, isMobile } = get();
       const instance = windows.get(key);
       if (!instance) return;
+
+      // If window is popped out, focus the pop-out window instead
+      if (instance.isPoppedOut) {
+        void focusPopOutWindow(key);
+        return;
+      }
 
       const newWindows = new Map(windows);
 
@@ -188,6 +198,38 @@ export const createWindowsStore = () => {
       });
 
       set({ windows: newWindows });
+    },
+
+    popOutWindow: (key) => {
+      const { windows } = get();
+      const instance = windows.get(key);
+      if (!instance) return;
+
+      const newWindows = new Map(windows);
+      newWindows.set(key, { ...instance, isPoppedOut: true, isOpen: false });
+      set({ windows: newWindows });
+
+      // Broadcast state to pop-out windows
+      const poppedOutWindows: PopoutWindowState[] = Array.from(newWindows.values())
+        .filter((w) => w.isPoppedOut)
+        .map((w) => ({ key: w.key, window: w.window }));
+      broadcastWindowState(poppedOutWindows);
+    },
+
+    popInWindow: (key) => {
+      const { windows } = get();
+      const instance = windows.get(key);
+      if (!instance) return;
+
+      const newWindows = new Map(windows);
+      newWindows.set(key, { ...instance, isPoppedOut: false, isOpen: true });
+      set({ windows: newWindows });
+
+      // Broadcast updated state
+      const poppedOutWindows: PopoutWindowState[] = Array.from(newWindows.values())
+        .filter((w) => w.isPoppedOut)
+        .map((w) => ({ key: w.key, window: w.window }));
+      broadcastWindowState(poppedOutWindows);
     },
   }));
 };

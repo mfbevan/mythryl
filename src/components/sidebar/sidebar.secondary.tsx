@@ -20,16 +20,28 @@ export const SidebarSecondary = ({
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton asChild size="sm">
-                <Link href={item.href} target={item.isExternal ? "_blank" : ""}>
+          {items.map((item) =>
+            item.onClick ? (
+              <SidebarMenuItem key={item.label}>
+                <SidebarMenuButton size="sm" onClick={item.onClick}>
                   {item.icon && <item.icon />}
                   <span>{item.label}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ) : (
+              <SidebarMenuItem key={item.label}>
+                <SidebarMenuButton asChild size="sm">
+                  <Link
+                    href={item.href}
+                    target={item.isExternal ? "_blank" : ""}
+                  >
+                    {item.icon && <item.icon />}
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ),
+          )}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

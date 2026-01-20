@@ -58,6 +58,8 @@ export const useWindowActions = () => {
       minimizeAllWindows: store.getState().minimizeAllWindows,
       removeAllWindows: store.getState().removeAllWindows,
       reorderWindows: store.getState().reorderWindows,
+      popOutWindow: store.getState().popOutWindow,
+      popInWindow: store.getState().popInWindow,
     }),
     [store]
   );

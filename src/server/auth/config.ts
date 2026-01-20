@@ -4,6 +4,15 @@ import { Base } from "./base";
 import { Farcaster } from "./farcaster";
 import type { AccountType } from "~/server/db/schema";
 
+// Tauri builds use tauri:// protocol which doesn't support secure cookies
+// In dev mode, Tauri connects to localhost which also needs relaxed cookie settings
+const isTauriBuild = process.env.TAURI_BUILD === "true";
+const isDev = process.env.NODE_ENV === "development";
+
+// Use relaxed cookie settings for Tauri builds OR development mode
+// This is safe because CSRF protection still validates the token, just with different cookie attributes
+const useRelaxedCookies = isTauriBuild || isDev;
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -55,20 +64,41 @@ export const authConfig = {
       };
     },
   },
-  cookies: {
-    sessionToken: {
-      options: {
-        sameSite: "none",
-        httpOnly: false,
-        secure: true,
+  // Trust the host header in Tauri/dev environments
+  trustHost: useRelaxedCookies,
+  cookies: useRelaxedCookies
+    ? {
+        // Tauri/Dev: Use lax cookies without secure flag (tauri:// and localhost don't support HTTPS)
+        sessionToken: {
+          options: {
+            sameSite: "lax",
+            httpOnly: false,
+            secure: false,
+          },
+        },
+        csrfToken: {
+          options: {
+            sameSite: "lax",
+            httpOnly: true,
+            secure: false,
+          },
+        },
+      }
+    : {
+        // Production Web: Use strict security settings
+        sessionToken: {
+          options: {
+            sameSite: "none",
+            httpOnly: false,
+            secure: true,
+          },
+        },
+        csrfToken: {
+          options: {
+            sameSite: "none",
+            httpOnly: true,
+            secure: true,
+          },
+        },
       },
-    },
-    csrfToken: {
-      options: {
-        sameSite: "none",
-        httpOnly: true,
-        secure: true,
-      },
-    },
-  },
 } satisfies NextAuthConfig;

@@ -20,6 +20,7 @@ export interface NavigationItem {
   href: string;
   isAvailable?: boolean;
   isExternal?: boolean;
+  onClick?: () => void;
 }
 
 export const navigation = {

@@ -12,6 +12,7 @@ import { WindowContent } from "./windows.content";
 import { WindowIcon } from "./windows.icon";
 import { WindowLabel } from "./windows.label";
 import type { WindowInstance } from "./windows.schema";
+import { TauriPopout } from "~/components/tauri";
 
 const WINDOW_WIDTH = 375;
 const WINDOW_HEIGHT = 695;
@@ -65,8 +66,8 @@ export function WindowTab({ instance }: WindowTabProps) {
       }}
       transition={springTransition}
       className={cn(
-        "bg-background border rounded-lg shadow-lg overflow-hidden shrink-0",
-        isDragging && "opacity-50 shadow-2xl z-50"
+        "bg-background shrink-0 overflow-hidden rounded-lg border shadow-lg",
+        isDragging && "z-50 opacity-50 shadow-2xl",
       )}
     >
       <div
@@ -74,19 +75,20 @@ export function WindowTab({ instance }: WindowTabProps) {
         {...attributes}
         {...listeners}
         onClick={handleToggle}
-        className="flex items-center gap-2 px-3 py-2 bg-muted/50 cursor-pointer hover:bg-muted/70 transition-colors select-none touch-none whitespace-nowrap"
+        className="bg-muted/50 hover:bg-muted/70 flex cursor-pointer touch-none items-center gap-2 px-3 py-2 whitespace-nowrap transition-colors select-none"
         style={{ height: HEADER_HEIGHT }}
       >
         <WindowIcon window={instance.window} className="size-4" />
-        <span className="text-sm font-medium truncate flex-1 min-w-0">
+        <span className="min-w-0 flex-1 truncate text-sm font-medium">
           <WindowLabel window={instance.window} />
         </span>
+        <TauriPopout instance={instance} />
         <button
           onClick={(e) => {
             e.stopPropagation();
             removeWindow(instance.key);
           }}
-          className="p-0.5 rounded hover:bg-muted-foreground/20 transition-colors shrink-0"
+          className="hover:bg-muted-foreground/20 shrink-0 rounded p-0.5 transition-colors"
         >
           <X className="size-3.5" />
         </button>

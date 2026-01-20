@@ -52,4 +52,5 @@ export interface WindowInstance {
   window: Window;
   isOpen: boolean;
   order: number;
+  isPoppedOut?: boolean;
 }

@@ -26,6 +26,7 @@ import { WindowTab } from "./windows.tab";
 import { WindowContent } from "./windows.content";
 import { WindowIcon } from "./windows.icon";
 import { WindowLabel } from "./windows.label";
+import { subscribeToWindowSync } from "~/components/tauri";
 
 const OPEN_WINDOW_WIDTH = 375;
 const CLOSED_WINDOW_WIDTH = 120;
@@ -41,6 +42,7 @@ export function WindowManager() {
     minimizeAllWindows,
     removeWindow,
     toggleWindowByType,
+    popInWindow,
   } = useWindowActions();
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,11 +56,32 @@ export function WindowManager() {
     useSensor(KeyboardSensor),
   );
 
-  const sortedWindows = Array.from(windows.values()).sort(
-    (a, b) => a.order - b.order,
-  );
+  // Filter out popped-out windows
+  const sortedWindows = Array.from(windows.values())
+    .filter((w) => !w.isPoppedOut)
+    .sort((a, b) => a.order - b.order);
 
   const activeWindow = sortedWindows.find((w) => w.isOpen);
+
+  // Store actions in refs to avoid stale closures in subscription
+  const popInWindowRef = useRef(popInWindow);
+  const removeWindowRef = useRef(removeWindow);
+  popInWindowRef.current = popInWindow;
+  removeWindowRef.current = removeWindow;
+
+  // Listen for pop-out window events via storage events
+  useEffect(() => {
+    const unsubscribe = subscribeToWindowSync((message) => {
+      if (message.type === "POPOUT_POPIN") {
+        // Pop back into main window
+        popInWindowRef.current(message.key);
+      } else if (message.type === "POPOUT_CLOSED") {
+        // Fully remove the window
+        removeWindowRef.current(message.key);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   const checkOverflow = useCallback(() => {
     if (isMobile || sortedWindows.length === 0) return;

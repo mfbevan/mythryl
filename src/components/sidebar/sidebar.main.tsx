@@ -22,6 +22,10 @@ import {
   type NavigationItem,
 } from "../navigation/navigation";
 import { usePathname } from "next/navigation";
+import { useTauriStore } from "~/components/tauri";
+import { MonitorSmartphone, Moon, RefreshCw, Sun } from "lucide-react";
+import { isTauri } from "~/lib/tauri";
+import { useTheme } from "next-themes";
 
 const createNavItem = (item: NavigationItem, pathname: string) => {
   return {
@@ -34,6 +38,8 @@ export const SidebarMain = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>) => {
   const pathname = usePathname();
+  const tauri = useTauriStore();
+  const { setTheme, theme } = useTheme();
 
   const main = [
     createNavItem(navigation.home, pathname),
@@ -44,7 +50,32 @@ export const SidebarMain = ({
 
   const demo = [createNavItem(navigation.windows, pathname)];
 
-  const secondary = [navigation.developers, navigation.settings];
+  const secondary = [
+    {
+      label:
+        tauri.viewMode === "desktop"
+          ? "Enter Mobile Mode"
+          : "Enter Desktop Mode",
+      icon: MonitorSmartphone,
+      href: "#",
+      onClick: () => tauri.toggleViewMode(),
+      isAvailable: isTauri(),
+    } satisfies NavigationItem,
+    {
+      label: "Refresh",
+      icon: RefreshCw,
+      href: "#",
+      onClick: () => window.location.reload(),
+      isAvailable: true,
+    } satisfies NavigationItem,
+    {
+      label: "Toggle Theme",
+      icon: theme === "dark" ? Moon : Sun,
+      href: "#",
+    } satisfies NavigationItem,
+    navigation.developers,
+    navigation.settings,
+  ].filter((s) => s.isAvailable);
 
   return (
     <Sidebar collapsible="icon" variant="inset" {...props}>
@@ -59,7 +90,6 @@ export const SidebarMain = ({
                   <span className="truncate text-[10px]">
                     A Farcaster Client
                   </span>
-                  {/* <CreditsBalance /> */}
                 </div>
               </Link>
             </SidebarMenuButton>
