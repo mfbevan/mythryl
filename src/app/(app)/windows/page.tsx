@@ -48,7 +48,7 @@ export default function WindowsPage() {
               onClick={() =>
                 addWindow({
                   type: "miniapp",
-                  url: "https://participated-ent-arguments-coordination.trycloudflare.com/demo",
+                  url: "https://myers-associate-ricky-hybrid.trycloudflare.com/demo",
                 })
               }
             >

@@ -53,7 +53,7 @@ export const StepWallet = ({ onComplete }: StepWalletProps) => {
       }
 
       // Set as active wallet in Thirdweb context for subsequent steps
-      setActiveWallet(wallet);
+      await setActiveWallet(wallet);
 
       // Save address to server
       await setWalletAddress.mutateAsync({ address: account.address });

@@ -17,13 +17,14 @@ import type * as SignManifest from "@farcaster/miniapp-core/dist/actions/SignMan
 import type * as Ready from "@farcaster/miniapp-core/dist/actions/Ready";
 import type * as Haptics from "@farcaster/miniapp-core/dist/actions/Haptics";
 import type * as Back from "@farcaster/miniapp-core/dist/back";
+import { SiweMessage } from "siwe";
 import { toast } from "sonner";
 
 import type { MiniAppHostOptions } from "./miniapps.types";
 
 /**
  * Creates the SDK implementation for mini app host actions.
- * Currently toasts all actions for debugging/development.
+ * Unimplemented actions show toasts for debugging.
  */
 export const createMiniAppHostSDK = (
   options: MiniAppHostOptions,
@@ -32,17 +33,14 @@ export const createMiniAppHostSDK = (
   context,
 
   close: () => {
-    toast.info("Mini App: close");
     options.onClose();
   },
 
-  ready: (readyOptions?: Partial<Ready.ReadyOptions>) => {
-    toast.info("Mini App: ready");
+  ready: (_readyOptions?: Partial<Ready.ReadyOptions>) => {
     options.onReady();
   },
 
   openUrl: (url: string) => {
-    toast.info(`Mini App: openUrl - ${url}`);
     window.open(url, "_blank");
   },
 
@@ -59,11 +57,31 @@ export const createMiniAppHostSDK = (
   },
 
   signIn: async (signInOptions: SignIn.SignInOptions): Promise<SignIn.SignInResult> => {
-    toast.info("Mini App: signIn");
-    // Return placeholder - actual SIWE signature would go here
+    const miniAppOrigin = new URL(options.miniAppUrl);
+
+    // Create SIWE message with Farcaster-required format
+    const siweMessage = new SiweMessage({
+      domain: miniAppOrigin.host,
+      address: options.account.address,
+      statement: "Farcaster Auth",
+      uri: miniAppOrigin.origin,
+      version: "1",
+      chainId: 10, // Farcaster uses Optimism for auth
+      nonce: signInOptions.nonce,
+      issuedAt: new Date().toISOString(),
+      notBefore: signInOptions.notBefore,
+      expirationTime: signInOptions.expirationTime,
+      resources: [`farcaster://fid/${options.user.fid}`],
+    });
+
+    const message = siweMessage.prepareMessage();
+
+    // Sign the message with the wallet
+    const signature = await options.account.signMessage({ message });
+
     return {
-      signature: "0x",
-      message: "",
+      signature,
+      message,
       authMethod: "custody",
     };
   },
@@ -151,8 +169,6 @@ export const createMiniAppHostSDK = (
   },
 
   getCapabilities: async (): Promise<MiniAppHostCapability[]> => {
-    toast.info("Mini App: getCapabilities");
-    // Return supported capabilities
     return [
       "wallet.getEthereumProvider",
       "actions.ready",
@@ -172,8 +188,6 @@ export const createMiniAppHostSDK = (
   },
 
   getChains: async (): Promise<string[]> => {
-    toast.info("Mini App: getChains");
-    // Return Base chain
     return ["eip155:8453"];
   },
 
