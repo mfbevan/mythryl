@@ -45,7 +45,10 @@ export const CastActions = ({
   const isRecasted = viewerContext?.recasted ?? false;
 
   return (
-    <div className="flex w-full items-center justify-between">
+    <div
+      className="flex w-full items-center justify-between"
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Reply - count only, not clickable */}
       <Button
         variant="ghost"
@@ -66,8 +69,8 @@ export const CastActions = ({
         className={cn(
           "h-8 gap-1.5 px-2",
           isRecasted
-            ? "text-green-500 hover:text-green-600"
-            : "text-muted-foreground hover:text-green-500"
+            ? "text-emerald-400 hover:text-emerald-300"
+            : "text-muted-foreground hover:text-emerald-400"
         )}
         onClick={(e) => {
           e.preventDefault();
@@ -89,8 +92,8 @@ export const CastActions = ({
         className={cn(
           "h-8 gap-1.5 px-2",
           isLiked
-            ? "text-red-500 hover:text-red-600"
-            : "text-muted-foreground hover:text-red-500"
+            ? "text-rose-400 hover:text-rose-300"
+            : "text-muted-foreground hover:text-rose-400"
         )}
         onClick={(e) => {
           e.preventDefault();

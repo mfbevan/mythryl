@@ -1,7 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "../ui/button";
-import { ArrowLeft, Bell } from "lucide-react";
+import {
+  ArrowLeft,
+  Bell,
+  Menu,
+  PanelLeftOpen,
+  SidebarClose,
+} from "lucide-react";
 import type { NavigationItem } from "../navigation/navigation";
 import { useCurrentUser } from "../user/user.hooks";
 import { UserAvatar } from "../user/user.avatar";
@@ -47,18 +54,23 @@ export const SidebarPageHeader = ({
           </div>
 
           <div className="flex items-center">
+            <Button
+              size="icon"
+              variant="ghost"
+              className="md:hidden"
+              onClick={toggleSidebar}
+            >
+              <PanelLeftOpen className="size-4" />
+            </Button>
             <Button size="icon" variant="ghost">
               <Bell className="size-4" />
             </Button>
             {user && (
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={toggleSidebar}
-                className="rounded-full"
-              >
-                <UserAvatar user={user} className="rounded-full" />
-              </Button>
+              <Link href={`/${user.username}`}>
+                <Button size="icon" variant="ghost" className="rounded-full">
+                  <UserAvatar user={user} className="rounded-full" />
+                </Button>
+              </Link>
             )}
           </div>
         </div>

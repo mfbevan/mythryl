@@ -31,6 +31,12 @@ export type LiteFarcasterUser = Pick<
   custody_address?: Address;
 };
 
+// Full profile type for caching (extends LiteFarcasterUser with social stats)
+export type CachedFarcasterProfile = LiteFarcasterUser & {
+  follower_count: number;
+  following_count: number;
+};
+
 export const getLiteFarcasterUser = async (
   fid: number,
 ): Promise<LiteFarcasterUser> => {
@@ -153,4 +159,67 @@ export const lookupSigner = async (
     fid: signer.fid,
     signer_approval_url: signer.signer_approval_url,
   };
+};
+
+// Convert a FarcasterUser to CachedFarcasterProfile
+export const toCachedProfile = (user: FarcasterUser): CachedFarcasterProfile => ({
+  fid: user.fid,
+  username: user.username,
+  display_name: user.display_name,
+  pfp_url: user.pfp_url,
+  auth_addresses: user.auth_addresses,
+  verified_accounts: user.verified_accounts,
+  score: user.score,
+  profile: user.profile,
+  pro: user.pro?.status === "subscribed",
+  custody_address: (user as unknown as { custody_address?: string })
+    .custody_address as Address | undefined,
+  follower_count: user.follower_count,
+  following_count: user.following_count,
+});
+
+// Fetch profile by FID
+export const fetchFarcasterProfileByFid = async (
+  fid: number,
+): Promise<CachedFarcasterProfile | null> => {
+  try {
+    const { users } = await neynar.fetchBulkUsers({ fids: [fid] });
+    const [user] = users;
+    if (!user) return null;
+    return toCachedProfile(user);
+  } catch (error) {
+    console.error("[Neynar] Error fetching profile by FID:", error);
+    return null;
+  }
+};
+
+// Fetch profiles by FIDs (batch)
+export const fetchFarcasterProfilesByFids = async (
+  fids: number[],
+): Promise<CachedFarcasterProfile[]> => {
+  if (fids.length === 0) return [];
+  try {
+    const { users } = await neynar.fetchBulkUsers({ fids });
+    return users.map(toCachedProfile);
+  } catch (error) {
+    console.error("[Neynar] Error fetching profiles by FIDs:", error);
+    return [];
+  }
+};
+
+// Fetch profile by username (uses search, returns first exact match)
+export const fetchFarcasterProfileByUsername = async (
+  username: string,
+): Promise<CachedFarcasterProfile | null> => {
+  try {
+    const { result } = await neynar.searchUser({ q: username, limit: 1 });
+    const user = result.users.find(
+      (u) => u.username.toLowerCase() === username.toLowerCase(),
+    );
+    if (!user) return null;
+    return toCachedProfile(user);
+  } catch (error) {
+    console.error("[Neynar] Error fetching profile by username:", error);
+    return null;
+  }
 };

@@ -10,8 +10,6 @@ import {
 } from "drizzle-orm/pg-core";
 import type { Address } from "thirdweb";
 
-import type { LiteFarcasterUser } from "~/services/neynar.service";
-
 export const userStatus = pgEnum("user_status", ["active", "nerfed", "banned"]);
 export type UserStatus = (typeof userStatus.enumValues)[number];
 
@@ -45,7 +43,6 @@ export const users = pgTable("users", {
   onboardingStatus: onboardingStatus("onboarding_status").default("pending"),
   authAddressStatus: authAddressStatus("auth_address_status"),
   authAddressApprovalUrl: text("auth_address_approval_url"),
-  neynar: jsonb("neynar").default({}).$type<LiteFarcasterUser>(),
   lastSyncedAt: timestamp("last_synced_at")
     .defaultNow()
     .$onUpdate(() => new Date()),

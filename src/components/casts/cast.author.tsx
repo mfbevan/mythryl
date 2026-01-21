@@ -1,6 +1,7 @@
 "use client";
 
 import { formatDistanceToNowStrict } from "date-fns";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import type { Author, Channel } from "~/server/api/routers/feed/feed.schema";
 
@@ -31,20 +32,28 @@ export const CastAuthor = ({ author, timestamp, channel }: CastAuthorProps) => {
     .replace(" years", "y")
     .replace(" year", "y");
 
+  const profileUrl = `/${author.username}`;
+
   return (
     <div className="flex items-start gap-2">
-      <Avatar className="size-9">
-        <AvatarImage src={author.pfp_url ?? undefined} alt={author.username} />
-        <AvatarFallback className="text-xs">
-          {author.display_name?.[0] ?? author.username[0]}
-        </AvatarFallback>
-      </Avatar>
+      <Link href={profileUrl} onClick={(e) => e.stopPropagation()}>
+        <Avatar className="size-9 transition-opacity hover:opacity-80">
+          <AvatarImage src={author.pfp_url ?? undefined} alt={author.username} />
+          <AvatarFallback className="text-xs">
+            {author.display_name?.[0] ?? author.username[0]}
+          </AvatarFallback>
+        </Avatar>
+      </Link>
 
       <div className="flex min-w-0 flex-1 flex-col text-sm">
         <div className="flex items-center gap-1.5">
-          <span className="truncate font-semibold text-foreground">
+          <Link
+            href={profileUrl}
+            onClick={(e) => e.stopPropagation()}
+            className="truncate font-semibold text-foreground hover:underline"
+          >
             {author.display_name ?? author.username}
-          </span>
+          </Link>
           {author.power_badge && (
             <svg
               className="size-3.5 shrink-0 text-purple-500"
@@ -58,7 +67,13 @@ export const CastAuthor = ({ author, timestamp, channel }: CastAuthorProps) => {
           <span className="text-muted-foreground">{shortTime}</span>
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground">
-          <span>@{author.username}</span>
+          <Link
+            href={profileUrl}
+            onClick={(e) => e.stopPropagation()}
+            className="hover:underline"
+          >
+            @{author.username}
+          </Link>
           {channel && (
             <>
               <span>·</span>

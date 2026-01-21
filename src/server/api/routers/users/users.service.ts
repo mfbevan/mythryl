@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 
 import { db, type DB } from "~/server/db";
 import { userAccounts, users, type AccountType } from "~/server/db/schema";
-import { getLiteFarcasterUser } from "~/services/neynar.service";
+import { getProfileByFid } from "../profiles/profiles.service";
 
 export const getCurrentUserById = (db: DB) => async (userId: string) => {
   const playerWithAccounts = await db.query.users.findFirst({
@@ -80,7 +80,7 @@ export const getOrCreateUserAccount = async (
     return account;
   }
 
-  const { player, neynar } = await createNewUser(newAccount?.fid);
+  const { player, profile } = await createNewUser(newAccount?.fid);
 
   const [createdAccount] = await db
     .insert(userAccounts)
@@ -88,13 +88,13 @@ export const getOrCreateUserAccount = async (
       playerId: player.id,
       accountType,
       accountId,
-      username: neynar?.username ?? newAccount?.username ?? accountId,
+      username: profile?.username ?? newAccount?.username ?? accountId,
       displayName:
-        neynar?.display_name ??
+        profile?.display_name ??
         newAccount?.displayName ??
         newAccount?.username ??
         accountId,
-      avatar: neynar?.pfp_url ?? newAccount?.avatar ?? getUserAvatar(accountId),
+      avatar: profile?.pfp_url ?? newAccount?.avatar ?? getUserAvatar(accountId),
     })
     .returning();
 
@@ -113,15 +113,16 @@ const createNewUser = async (fid?: number) => {
       })
     : null;
 
-  const neynar = fid ? await getLiteFarcasterUser(fid) : null;
+  // Fetch and cache profile via profiles service
+  const profile = fid ? await getProfileByFid(db)(fid) : null;
 
-  if (existingPlayerByFid) return { player: existingPlayerByFid, neynar };
+  if (existingPlayerByFid) return { player: existingPlayerByFid, profile };
 
-  const [player] = await db.insert(users).values({ fid, neynar }).returning();
+  const [player] = await db.insert(users).values({ fid }).returning();
 
   if (!player) throw new Error("Failed to create user");
 
-  return { player, neynar };
+  return { player, profile };
 };
 
 export const getUserAvatar = (userId: string) => {
