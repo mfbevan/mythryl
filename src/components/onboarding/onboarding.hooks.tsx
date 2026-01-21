@@ -11,8 +11,6 @@ export const useOnboardingStatus = () => {
 
   const query = api.onboarding.getStatus.useQuery(undefined, {
     enabled: isAuthenticated,
-    refetchOnWindowFocus: true,
-    staleTime: 0,
   });
 
   return {

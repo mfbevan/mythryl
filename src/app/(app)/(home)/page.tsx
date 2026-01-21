@@ -3,8 +3,10 @@ import { FeedContainer } from "~/components/feed";
 
 export default function HomePage() {
   return (
-    <SidebarPage showHeader={false} className="relative !overflow-hidden">
-      <FeedContainer />
-    </SidebarPage>
+    <>
+      <SidebarPage showHeader={false}>
+        <FeedContainer />
+      </SidebarPage>
+    </>
   );
 }

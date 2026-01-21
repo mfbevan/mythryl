@@ -21,7 +21,7 @@ export interface SidebarPageProps {
 }
 
 export const SidebarPage = ({
-  showHeader = true,
+  showHeader = false,
   breadcrumbs = [],
   children,
   className,
@@ -70,9 +70,15 @@ export const SidebarPage = ({
         </header>
       )}
 
-      <div className={cn("min-h-0 flex-1 overflow-y-auto", className)}>
-        {children}
-      </div>
+      <div className={cn("min-h-0 flex-1", className)}>{children}</div>
     </div>
   );
+};
+
+export const SidebarPageContent = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return <div className="mx-auto max-w-screen-sm">{children}</div>;
 };

@@ -1,15 +1,9 @@
-import { Outfit, Titan_One } from "next/font/google";
+import { Rubik } from "next/font/google";
 
-const outfit = Outfit({
+const rubik = Rubik({
   subsets: ["latin"],
-  variable: "--font-outfit",
-  weight: ["400", "600", "700", "800", "900"],
+  variable: "--font-rubik",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const titan = Titan_One({
-  subsets: ["latin"],
-  variable: "--font-titan",
-  weight: ["400"],
-});
-
-export const fonts = `${outfit.variable} ${titan.variable}`;
+export const fonts = `${rubik.variable}`;

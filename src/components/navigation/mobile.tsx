@@ -7,27 +7,28 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { cn } from "~/lib/utils";
 import { ConnectButton } from "../wallet/connect-button";
-import { MessageSquare, PanelLeftIcon, Wallet } from "lucide-react";
-import { useSidebar } from "../ui/sidebar";
+import { Wallet } from "lucide-react";
 import { useWindowActions } from "../windows/provider";
 import { env } from "~/env.app";
 import { filterUnwrap } from "~/lib/map";
 
 const createNavItem = (item: NavigationItem, pathname: string) => {
+  const href = item.href ?? "";
   return {
     ...item,
-    isActive: pathname.startsWith(item.href ?? ""),
+    isActive: href === "/" ? pathname === "/" : pathname.startsWith(href),
   };
 };
 
 export const MobileNavigation = () => {
   const pathName = usePathname();
-  const { toggleSidebar } = useSidebar();
   const { toggleWindowByType } = useWindowActions();
 
   const items = [
     createNavItem(navigation.home, pathName),
+    createNavItem(navigation.explore, pathName),
     createNavItem(navigation.apps, pathName),
+    createNavItem(navigation.messages, pathName),
   ].filter(filterUnwrap);
 
   const windowButtons = [
@@ -35,11 +36,6 @@ export const MobileNavigation = () => {
       label: "Wallet",
       icon: Wallet,
       onClick: () => toggleWindowByType({ type: "wallet" }),
-    },
-    {
-      label: "Messages",
-      icon: MessageSquare,
-      onClick: () => toggleWindowByType({ type: "message" }),
     },
   ];
 
@@ -54,14 +50,19 @@ export const MobileNavigation = () => {
               <Button
                 variant="ghost"
                 className={cn(
-                  "flex h-16 w-full flex-col items-center justify-center pt-3 transition-all duration-300",
+                  "flex h-12 w-full flex-col items-center justify-center transition-all duration-300",
                   item.isActive && "text-primary",
                 )}
               >
-                {item.icon && <item.icon />}
-                <span className="pb-1 text-[0.4rem] font-normal uppercase">
+                {item.icon && (
+                  <item.icon
+                    fill="currentColor size-6"
+                    fillOpacity={item.isActive ? 0.2 : 0}
+                  />
+                )}
+                {/* <span className="pb-1 text-[0.4rem] font-normal uppercase">
                   {item.label}
-                </span>
+                </span> */}
               </Button>
             </Link>
           </Fragment>
@@ -71,31 +72,16 @@ export const MobileNavigation = () => {
           <div key={button.label} className="w-full">
             <Button
               variant="ghost"
-              className="flex h-16 w-full flex-col items-center justify-center pt-3 transition-all duration-300"
+              className="flex h-12 w-full flex-col items-center justify-center transition-all duration-300"
               onClick={button.onClick}
             >
-              <button.icon />
-              <span className="pb-1 text-[0.4rem] font-normal uppercase">
+              <button.icon className="size-4" />
+              {/* <span className="pb-1 text-[0.4rem] font-normal uppercase">
                 {button.label}
-              </span>
+              </span> */}
             </Button>
           </div>
         ))}
-
-        <div key="menu" className="w-full">
-          <Button
-            variant="ghost"
-            className={cn(
-              "flex h-16 w-full flex-col items-center justify-center pt-3 transition-all duration-300",
-            )}
-            onClick={toggleSidebar}
-          >
-            <PanelLeftIcon />
-            <span className="pb-1 text-[0.4rem] font-normal uppercase">
-              Menu
-            </span>
-          </Button>
-        </div>
       </div>
 
       <div className="hidden">

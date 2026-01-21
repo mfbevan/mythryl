@@ -29,6 +29,13 @@
       "when": 1768900991806,
       "tag": "0003_rich_nitro",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1768950393114,
+      "tag": "0004_pink_energizer",
+      "breakpoints": true
     }
   ]
 }

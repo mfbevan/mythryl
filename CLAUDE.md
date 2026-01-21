@@ -78,7 +78,6 @@ Procedures: `publicProcedure` (anyone), `protectedProcedure` (authenticated), `w
 
 - **Zustand** for client state (wallet, windows)
 - **React Query** via tRPC for server state
-- **Nuqs** for URL state
 
 ### Import Alias
 
@@ -89,6 +88,7 @@ Procedures: `publicProcedure` (anyone), `protectedProcedure` (authenticated), `w
 ### Code Style
 
 - **Always use const arrow functions** - never use `function` declarations
+
   ```typescript
   // Good
   const MyComponent = () => { ... }
@@ -98,6 +98,10 @@ Procedures: `publicProcedure` (anyone), `protectedProcedure` (authenticated), `w
   function MyComponent() { ... }
   function handleClick() { ... }
   ```
+
+- **Never use `next/image`** - always use regular `<img>` tags
+  - External URLs cause issues with Next.js image optimization
+  - Use standard img with appropriate Tailwind classes for sizing/object-fit
 
 ### Component Structure
 

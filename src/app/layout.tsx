@@ -9,7 +9,6 @@ import { fonts } from "~/components/theme/theme.fonts";
 import { Toaster } from "~/components/ui/sonner";
 import { ProgressProvider } from "~/components/navigation/progress";
 import { createMetadata } from "~/services/metadata.service";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata: Metadata = createMetadata({});
 
@@ -22,10 +21,8 @@ export default function RootLayout({
         <ProgressProvider>
           <ThemeProvider>
             <TRPCReactProvider>
-              <NuqsAdapter>
-                {children}
-                <Toaster />
-              </NuqsAdapter>
+              {children}
+              <Toaster />
             </TRPCReactProvider>
           </ThemeProvider>
         </ProgressProvider>

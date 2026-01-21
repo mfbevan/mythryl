@@ -184,7 +184,10 @@ export function WindowManager() {
 
             {/* Content */}
             <div className="flex-1 overflow-auto">
-              <WindowContent window={activeWindow.window} windowId={activeWindow.key} />
+              <WindowContent
+                window={activeWindow.window}
+                windowId={activeWindow.key}
+              />
             </div>
 
             {/* Tab bar */}
@@ -253,9 +256,8 @@ export function WindowManager() {
           <Button
             key={button.label}
             onClick={button.onClick}
-            variant="outline"
+            variant="glass"
             size="iconLg"
-            className="shadow-lg"
             title={button.label}
           >
             <button.icon className="" />

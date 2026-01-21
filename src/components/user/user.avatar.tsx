@@ -17,7 +17,7 @@ export const UserAvatar = ({
   className?: string;
 }) => {
   return (
-    <Avatar className={cn(className, "h-8 w-8 rounded-sm")}>
+    <Avatar className={cn("h-8 w-8 rounded-sm", className)}>
       <AvatarImage src={user.avatar ?? fallbackAvatar(user.id)} alt={user.id} />
       <AvatarFallback className="rounded-lg"></AvatarFallback>
     </Avatar>

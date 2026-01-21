@@ -1,6 +1,7 @@
 import {
   Code,
   Cog,
+  Compass,
   Handshake,
   HatGlasses,
   Home,
@@ -28,6 +29,13 @@ export const navigation = {
     label: "Home",
     href: "/",
     icon: Home,
+    isAvailable: true,
+  },
+
+  explore: {
+    label: "Explore",
+    href: "/explore",
+    icon: Compass,
     isAvailable: true,
   },
 
