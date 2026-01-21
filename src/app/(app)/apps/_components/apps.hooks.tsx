@@ -6,10 +6,11 @@ import { api } from "~/trpc/react";
 import { useAppsStore } from "./apps.store";
 import { createPageTabsStore } from "~/components/page-tabs";
 
-export type AppsTabValue = "discover" | "my_apps" | "favorites";
+export type AppsTabValue = "discover" | "categories" | "my_apps" | "favorites";
 
 const APPS_TABS = [
   { value: "discover", label: "Discover" },
+  { value: "categories", label: "Categories" },
   { value: "my_apps", label: "My Apps" },
   { value: "favorites", label: "Favorites" },
 ] as const satisfies readonly { value: AppsTabValue; label: string }[];

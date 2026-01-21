@@ -10,6 +10,7 @@ import {
   LifeBuoy,
   MessageSquare,
   Rss,
+  Search,
   type LucideIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -29,6 +30,13 @@ export const navigation = {
     label: "Home",
     href: "/",
     icon: Home,
+    isAvailable: true,
+  },
+
+  search: {
+    label: "Search",
+    href: "/search",
+    icon: Search,
     isAvailable: true,
   },
 

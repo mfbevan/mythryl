@@ -18,9 +18,9 @@ export const AppsCard = ({ app }: AppsCardProps) => {
   return (
     <Link
       href={`/apps/${encodeURIComponent(miniapp.url)}`}
-      className="hover:bg-accent/50 group flex items-start gap-3 rounded-lg border p-4 transition-colors"
+      className="hover:bg-accent/50 group flex items-center gap-3 rounded-lg p-2 transition-colors"
     >
-      <Avatar className="size-12 shrink-0 rounded-lg">
+      <Avatar className="size-10 shrink-0 rounded-lg">
         <AvatarImage src={config.iconUrl} alt={config.name} />
         <AvatarFallback className="rounded-lg">
           {config.name.slice(0, 2).toUpperCase()}
@@ -39,15 +39,9 @@ export const AppsCard = ({ app }: AppsCardProps) => {
         </div>
 
         {config.subtitle && (
-          <p className="text-muted-foreground mt-0.5 truncate text-sm">
+          <p className="text-muted-foreground truncate text-sm">
             {config.subtitle}
           </p>
-        )}
-
-        {miniapp.category && (
-          <Badge variant="outline" className="mt-2">
-            {miniapp.category}
-          </Badge>
         )}
       </div>
     </Link>
@@ -55,12 +49,11 @@ export const AppsCard = ({ app }: AppsCardProps) => {
 };
 
 export const AppsCardSkeleton = () => (
-  <div className="flex items-start gap-3 rounded-lg border p-4">
-    <div className="bg-accent size-12 shrink-0 animate-pulse rounded-lg" />
-    <div className="min-w-0 flex-1 space-y-2">
+  <div className="flex items-center gap-3 rounded-lg p-2">
+    <div className="bg-accent size-10 shrink-0 animate-pulse rounded-lg" />
+    <div className="min-w-0 flex-1 space-y-1.5">
       <div className="bg-accent h-5 w-32 animate-pulse rounded" />
       <div className="bg-accent h-4 w-48 animate-pulse rounded" />
-      <div className="bg-accent h-5 w-20 animate-pulse rounded-full" />
     </div>
   </div>
 );

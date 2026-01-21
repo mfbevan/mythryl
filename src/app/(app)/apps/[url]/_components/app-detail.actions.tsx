@@ -44,7 +44,7 @@ export const AppDetailActions = ({ app }: AppDetailActionsProps) => {
 
   return (
     <>
-      <div className="flex w-full flex-wrap gap-2">
+      <div className="flex w-full flex-wrap gap-2 md:w-fit">
         <Button className="flex-1 md:flex-none" onClick={handleOpenApp}>
           Open
         </Button>

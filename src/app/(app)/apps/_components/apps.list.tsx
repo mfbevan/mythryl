@@ -25,7 +25,7 @@ export const AppsList = () => {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2">
       {data.data.map((app) => (
         <AppsCard key={app.miniapp.url} app={app} />
       ))}
@@ -34,7 +34,7 @@ export const AppsList = () => {
 };
 
 export const AppsListSkeleton = () => (
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <div className="grid gap-4 md:grid-cols-2">
     {Array.from({ length: 6 }).map((_, i) => (
       <AppsCardSkeleton key={i} />
     ))}

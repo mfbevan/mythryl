@@ -26,6 +26,7 @@ export const MobileNavigation = () => {
 
   const items = [
     createNavItem(navigation.home, pathName),
+    createNavItem(navigation.search, pathName),
     createNavItem(navigation.explore, pathName),
     createNavItem(navigation.apps, pathName),
     createNavItem(navigation.messages, pathName),
@@ -56,8 +57,9 @@ export const MobileNavigation = () => {
               >
                 {item.icon && (
                   <item.icon
-                    fill="currentColor size-6"
-                    fillOpacity={item.isActive ? 0.2 : 0}
+                    className="size-4"
+                    fill="currentColor"
+                    fillOpacity={item.isActive ? 0.3 : 0}
                   />
                 )}
                 {/* <span className="pb-1 text-[0.4rem] font-normal uppercase">

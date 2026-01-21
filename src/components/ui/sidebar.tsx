@@ -310,7 +310,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     <main
       data-slot="sidebar-inset"
       className={cn(
-        "bg-background relative flex w-full flex-1 flex-col overflow-y-auto overscroll-contain rounded-none border md:overflow-y-visible",
+        "bg-background relative flex h-full w-full flex-1 flex-col overflow-y-auto overscroll-contain rounded-none border",
         // "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-none md:peer-data-[variant=inset]:shadow-inner md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
         className,
       )}
@@ -715,7 +715,7 @@ function SidebarBreakpoints({ children }: { children: React.ReactNode }) {
       {/* Desktop layout - visible from md breakpoint and above */}
       <div
         className={cn(
-          "hidden md:flex md:min-h-svh md:w-full md:flex-1 md:pl-2",
+          "hidden md:flex md:h-svh md:w-full md:flex-1 md:pl-2",
           state === "expanded" && "md:pl-0",
         )}
       >

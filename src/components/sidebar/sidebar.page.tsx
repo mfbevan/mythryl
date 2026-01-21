@@ -30,7 +30,7 @@ export const SidebarPage = ({
   const last = breadcrumbs[breadcrumbs.length - 1]!;
 
   return (
-    <div className="flex h-full flex-col">
+    <div>
       {showHeader && (
         <header className="from-background bg-background sticky top-0 z-50 hidden h-12 shrink-0 items-center gap-2 border-b md:flex md:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -70,15 +70,19 @@ export const SidebarPage = ({
         </header>
       )}
 
-      <div className={cn("min-h-0 flex-1", className)}>{children}</div>
+      {children}
     </div>
   );
 };
 
 export const SidebarPageContent = ({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) => {
-  return <div className="mx-auto max-w-screen-sm">{children}</div>;
+  return (
+    <div className={cn("mx-auto max-w-screen-sm", className)}>{children}</div>
+  );
 };

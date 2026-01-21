@@ -1,30 +1,21 @@
 "use client";
 
-import { SearchIcon, XIcon } from "lucide-react";
+import { SendHorizonal, SearchIcon } from "lucide-react";
 import type { KeyboardEvent } from "react";
 
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "~/components/ui/input-group";
+import { cn } from "~/lib/utils";
 import { useAppsFilters } from "./apps.hooks";
 import { APP_CATEGORIES } from "./apps.categories";
 
 export const AppsFilters = () => {
-  const {
-    searchInput,
-    category,
-    hasFilters,
-    setSearchInput,
-    submitSearch,
-    setCategory,
-    clearFilters,
-  } = useAppsFilters();
+  const { searchInput, category, setSearchInput, submitSearch, setCategory } =
+    useAppsFilters();
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -32,49 +23,54 @@ export const AppsFilters = () => {
     }
   };
 
+  const handleCategoryClick = (key: string) => {
+    setCategory(category === key ? null : key);
+  };
+
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="relative flex-1 sm:max-w-xs">
-        <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-        <Input
+    <div className="flex flex-col gap-4">
+      <InputGroup className="flex-1 rounded-full">
+        <InputGroupAddon align="inline-start">
+          <SearchIcon className="text-muted-foreground" />
+        </InputGroupAddon>
+        <InputGroupInput
           placeholder="Search apps..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="pl-9"
         />
-      </div>
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            onClick={submitSearch}
+            size="icon-xs"
+            className="rounded-full"
+            variant="default"
+          >
+            <SendHorizonal className="size-3" />
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
 
-      <div className="flex items-center gap-2">
-        <Button onClick={submitSearch} size="sm">
-          Search
-        </Button>
-
-        <Select
-          value={category ?? "all"}
-          onValueChange={(value) => setCategory(value === "all" ? null : value)}
-        >
-          <SelectTrigger className="w-full sm:w-[180px]" chevron>
-            <SelectValue placeholder="All categories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
-            {APP_CATEGORIES.map((cat) => (
-              <SelectItem key={cat.key} value={cat.key}>
-                <div className="flex items-center gap-2">
-                  <cat.icon className="size-4" />
-                  {cat.name}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {hasFilters && (
-          <Button variant="ghost" size="icon" onClick={clearFilters}>
-            <XIcon className="size-4" />
-          </Button>
-        )}
+      <div className="flex gap-1.5 overflow-x-auto pb-1">
+        {APP_CATEGORIES.map((cat) => {
+          const Icon = cat.icon;
+          const isSelected = category === cat.key;
+          return (
+            <button
+              key={cat.key}
+              type="button"
+              className={cn(
+                "flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-white transition-all",
+                cat.bg,
+                isSelected ? "opacity-100" : "opacity-60 hover:opacity-80",
+              )}
+              onClick={() => handleCategoryClick(cat.key)}
+            >
+              <Icon className="size-3" />
+              {cat.name}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

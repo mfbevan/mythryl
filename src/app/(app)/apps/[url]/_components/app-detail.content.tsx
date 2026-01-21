@@ -27,7 +27,7 @@ export const AppDetailContent = ({ url }: AppDetailContentProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-6 pt-4">
+    <div className="flex flex-col gap-6 p-4">
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <AppDetailHeader app={app} />
         <AppDetailActions app={app} />
